@@ -382,7 +382,7 @@ button.slick-prev.slick-arrow {
 
 /**
 new menu
-**/
+
 
 .fill_bg_n .menu-row.bgcolored,
 .fill_bg_y .menu-row.bgcolored>.maxwidth-theme {
@@ -421,7 +421,7 @@ new menu
 .mega-menu table td .wrap>.dropdown-menu .menu-wrapper>li:first-of-type:before,
 .mega-menu table td .wrap>.dropdown-menu>li:first-of-type:before {
     display: none !important;
-}
+}**/
 
 .top_slider_wrapp .flexslider .slides>li .banner_bg {
     height: 250px;
@@ -637,7 +637,7 @@ body .tabs_slider .catalog_item:hover .inner_wrap {
 
 }
 .contacts__item.contacts__item--phone .phone span small small {
-	opacity: !important;
+	opacity: 1!important;
 }
 .contacts__item.contacts__item--phone .phone .contacts__link .contacts__name {
 	margin: 0 5px 0 0;
@@ -650,14 +650,15 @@ body .tabs_slider .catalog_item:hover .inner_wrap {
     width: calc(100vw / 3)!important;
 	margin: 0 auto;
 }
-.menu-row .mega-menu table td.wide_menu>.wrap>.dropdown-menu {
-	width: 99%;
-	margin-left: 0.5%;
-}
 /* Убираем горизонтальный скролл */
 html, body {
     overflow-x: hidden;
     max-width: 100%;
 }
 
-
+.menu-row .mega-menu table td.wide_menu>.wrap>.dropdown-menu .menu-wrapper>li {
+    margin: 0 0 15px!important;
+}
+.menu-row .mega-menu table td.wide_menu .dropdown-menu>li>a, .menu-row .mega-menu table td.wide_menu .menu-wrapper>li>a {
+    line-height: 1.2!important;
+}
