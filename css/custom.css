@@ -283,6 +283,7 @@ button.slick-prev.slick-arrow {
 
 .like_icons span {
     background: inherit;
+    
 }
 
 .top_slider_wrapp .flexslider .slides>li.left .img .wrap_plaxy img {
@@ -425,7 +426,7 @@ new menu
 
 .top_slider_wrapp .flexslider .slides>li .banner_bg {
     height: 250px;
-    border-radius: 20px;
+    border-radius: 15px;
 }
 
 .top_slider_wrapp .flexslider,
@@ -524,6 +525,7 @@ body .tabs_slider .catalog_item:hover .inner_wrap {
     display: flex;
     justify-content: center;
     position: relative!important;
+    top: -5px;
         /* top: 265px;
         right: 25%;
         left: 33%; */
@@ -676,6 +678,65 @@ input[type=email], input[type=password], input[type=tel], input[type=text], sele
     border-radius: 15px;
     padding: 5px 13px 7px;
 }
-.btn {
+.btn, .news_blocks, .wrap_bg {
+    border-radius: 15px!important;
+}
+.adv_list.small_banners img, .news_akc_block .item, .viewed_block .item_block .item, .bx_filter .bx_filter_section,
+.bx-touch .best_block .tabs_slider .catalog_item .inner_wrap, body .best_block .tabs_slider .catalog_item:hover .inner_wrap, body .tabs_slider .catalog_item, .block .catalog_block .catalog_item_wrapp .catalog_item {
     border-radius: 15px;
+}
+.prop_soon {
+    font-size: 15px;
+}
+body .ajax_load.block .counter_wrapp {
+    padding:0;
+}
+.mainpage_item_wrapper .counter_wrapp {
+    padding:0;
+    margin: 0!important;
+}
+.mainpage_item_wrapper .counter_wrapp .button_block{
+    padding:0;
+    margin: 0!important;
+}
+.catalog_item_wrapp:hover .d-relative { 
+    position: absolute;
+    height: 80px;
+    bottom: -55px;
+    width: 100%;
+    left: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #f2f2f2;
+    border-radius: 0 0 15px 15px;
+    border-right: 1px solid #f2f2f2;
+    border-left: 1px solid #f2f2f2;
+    display: block;
+    opacity: 1;
+    box-shadow:0px 15px 15px rgba(0,0,0,0.10);
+	-moz-box-shadow:0px 15px 15px rgba(0,0,0,0.10);
+	-o-box-shadow:0px 15px 15px rgba(0,0,0,0.10);
+	-webkit-box-shadow:0px 15px 15px rgba(0,0,0,0.10);
+}
+.catalog_item_wrapp:hover  .d-relative.mainpage_item_wrapper { 
+    height: 60px;
+    bottom: -33px;
+}
+.d-relative:not(:hover) {
+    display: none;
+    opacity: 0;
+}
+.counter_wrapp {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    
+    width: 100%;
+}
+.catalog_item .item-title a, .catalog_item .item-title a span, .view-item .item-title a span {
+    padding-top: 0;
+}
+.catalog_item .cost.prices:not(.catalog-block__info-price) {
+    margin: 5px 0 0;
 }

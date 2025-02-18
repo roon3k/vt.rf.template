@@ -325,52 +325,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											<?}?>
 										<?}?>
 									</div>
-									<?if($arParams["DISPLAY_WISH_BUTTONS"] != "N" || $arParams["DISPLAY_COMPARE"] == "Y" || $arParams['GALLERY_ITEM_SHOW'] == 'Y' ):?>
-									<div class="like_icons">
-										<?if($arParams["DISPLAY_WISH_BUTTONS"] != "N"):?>
-											<?if(!$arItem["OFFERS"]):?>
-												<div class="wish_item_button" <?=($arAddToBasketData['CAN_BUY'] ? '' : 'style="display:none"');?>>
-													<span title="<?=GetMessage('CATALOG_WISH')?>" class="wish_item to" data-item="<?=$arItem["ID"]?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
-													<span title="<?=GetMessage('CATALOG_WISH_OUT')?>" class="wish_item in added" style="display: none;" data-item="<?=$arItem["ID"]?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
-												</div>
-											<?elseif($arItem["OFFERS"] && !empty($arItem['OFFERS_PROP'])):?>
-												<div class="wish_item_button ce_cmp_hidden" <?=(!$arAddToBasketData["CAN_BUY"] ? 'style="display:none;"' : '');?>>
-													<span title="<?=GetMessage('CATALOG_WISH')?>" class="wish_item to <?=$arParams["TYPE_SKU"];?>" data-item="<?=$currentSKUID;?>" data-iblock="<?=$currentSKUIBlock?>" data-offers="Y" data-props="<?=$arOfferProps?>"><i></i></span>
-													<span title="<?=GetMessage('CATALOG_WISH_OUT')?>" class="wish_item in added <?=$arParams["TYPE_SKU"];?>" style="display: none;" data-item="<?=$currentSKUID;?>" data-iblock="<?=$currentSKUIBlock?>"><i></i></span>
-												</div>
-											<?endif;?>
-										<?endif;?>										
-										<?if($arParams["DISPLAY_COMPARE"] == "Y"):?>
-											<?if(!$arItem["OFFERS"] || ($arParams["TYPE_SKU"] !== 'TYPE_1' || ($arParams["TYPE_SKU"] == 'TYPE_1' && !$arItem["OFFERS_PROP"]))):?>
-												<div class="compare_item_button">
-													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>" ><i></i></span>
-													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added" style="display: none;" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>"><i></i></span>
-												</div>
-											<?elseif($arItem["OFFERS"]):?>
-												<div class="compare_item_button ce_cmp_hidden">
-													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to <?=$arParams["TYPE_SKU"];?>" data-item="<?=$currentSKUID;?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>" ><i></i></span>
-													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added <?=$arParams["TYPE_SKU"];?>" style="display: none;" data-item="<?=$currentSKUID;?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
-												</div>
-												<div class="compare_item_button ce_cmp_visible">
-													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>" ><i></i></span>
-													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added" style="display: none;" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>"><i></i></span>
-												</div>
-											<?endif;?>
-										<?endif;?>
-										<?if($arParams['GALLERY_ITEM_SHOW'] == 'Y'):?>
-											<div class="fast_view_wrapper">
-												<span>
-													<?if($fast_view_text_tmp = CNext::GetFrontParametrValue('EXPRESSION_FOR_FAST_VIEW'))
-														$fast_view_text = $fast_view_text_tmp;
-													else
-														$fast_view_text = GetMessage('FAST_VIEW');?>
-													<i class="fast_view_block" data-event="jqm" data-param-form_id="fast_view" data-param-iblock_id="<?=$arParams["IBLOCK_ID"];?>" data-param-id="<?=$arItem["ID"];?>" data-param-fid="<?=$arItemIDs["strMainID"];?>" data-param-item_href="<?=urlencode($arItem["DETAIL_PAGE_URL"]);?>" title="<?=$fast_view_text;?>" data-name="fast_view">
-													</i>
-												</span>
-											</div>
-										<?endif;?>
-									</div>
-								<?endif;?>
+									
 									<?if($arParams["SHOW_DISCOUNT_TIME"]=="Y" && $arParams['SHOW_COUNTER_LIST'] != 'N'){?>
 										<?$arUserGroups = $USER->GetUserGroupArray();?>
 										<?if($arParams['SHOW_DISCOUNT_TIME_EACH_SKU'] != 'Y' || ($arParams['SHOW_DISCOUNT_TIME_EACH_SKU'] == 'Y' && !$arItem['OFFERS'])):?>
@@ -425,10 +380,54 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 										<?endif;?>
 									<?}?>
 								</div>
-							</div>
-
-							<div class="footer_button <?=($arItem["OFFERS"] && $arItem['OFFERS_PROP'] ? 'has_offer_prop' : '');?> inner_content js_offers__<?=$arItem['ID'];?>">
-								<div class="sku_props">
+								<!--- footer block --->
+								<div class="sku_props d-relative">
+								<?if($arParams["DISPLAY_WISH_BUTTONS"] != "N" || $arParams["DISPLAY_COMPARE"] == "Y" || $arParams['GALLERY_ITEM_SHOW'] == 'Y' ):?>
+									<div class="like_icons">
+										<?if($arParams["DISPLAY_WISH_BUTTONS"] != "N"):?>
+											<?if(!$arItem["OFFERS"]):?>
+												<div class="wish_item_button" <?=($arAddToBasketData['CAN_BUY'] ? '' : 'style="display:none"');?>>
+													<span title="<?=GetMessage('CATALOG_WISH')?>" class="wish_item to" data-item="<?=$arItem["ID"]?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
+													<span title="<?=GetMessage('CATALOG_WISH_OUT')?>" class="wish_item in added" style="display: none;" data-item="<?=$arItem["ID"]?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
+												</div>
+											<?elseif($arItem["OFFERS"] && !empty($arItem['OFFERS_PROP'])):?>
+												<div class="wish_item_button ce_cmp_hidden" <?=(!$arAddToBasketData["CAN_BUY"] ? 'style="display:none;"' : '');?>>
+													<span title="<?=GetMessage('CATALOG_WISH')?>" class="wish_item to <?=$arParams["TYPE_SKU"];?>" data-item="<?=$currentSKUID;?>" data-iblock="<?=$currentSKUIBlock?>" data-offers="Y" data-props="<?=$arOfferProps?>"><i></i></span>
+													<span title="<?=GetMessage('CATALOG_WISH_OUT')?>" class="wish_item in added <?=$arParams["TYPE_SKU"];?>" style="display: none;" data-item="<?=$currentSKUID;?>" data-iblock="<?=$currentSKUIBlock?>"><i></i></span>
+												</div>
+											<?endif;?>
+										<?endif;?>										
+										<?if($arParams["DISPLAY_COMPARE"] == "Y"):?>
+											<?if(!$arItem["OFFERS"] || ($arParams["TYPE_SKU"] !== 'TYPE_1' || ($arParams["TYPE_SKU"] == 'TYPE_1' && !$arItem["OFFERS_PROP"]))):?>
+												<div class="compare_item_button">
+													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>" ><i></i></span>
+													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added" style="display: none;" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>"><i></i></span>
+												</div>
+											<?elseif($arItem["OFFERS"]):?>
+												<div class="compare_item_button ce_cmp_hidden">
+													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to <?=$arParams["TYPE_SKU"];?>" data-item="<?=$currentSKUID;?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>" ><i></i></span>
+													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added <?=$arParams["TYPE_SKU"];?>" style="display: none;" data-item="<?=$currentSKUID;?>" data-iblock="<?=$arItem["IBLOCK_ID"]?>"><i></i></span>
+												</div>
+												<div class="compare_item_button ce_cmp_visible">
+													<span title="<?=GetMessage('CATALOG_COMPARE')?>" class="compare_item to" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>" ><i></i></span>
+													<span title="<?=GetMessage('CATALOG_COMPARE_OUT')?>" class="compare_item in added" style="display: none;" data-iblock="<?=$arParams["IBLOCK_ID"]?>" data-item="<?=$arItem["ID"]?>"><i></i></span>
+												</div>
+											<?endif;?>
+										<?endif;?>
+										<?if($arParams['GALLERY_ITEM_SHOW'] == 'Y'):?>
+											<div class="fast_view_wrapper">
+												<span>
+													<?if($fast_view_text_tmp = CNext::GetFrontParametrValue('EXPRESSION_FOR_FAST_VIEW'))
+														$fast_view_text = $fast_view_text_tmp;
+													else
+														$fast_view_text = GetMessage('FAST_VIEW');?>
+													<i class="fast_view_block" data-event="jqm" data-param-form_id="fast_view" data-param-iblock_id="<?=$arParams["IBLOCK_ID"];?>" data-param-id="<?=$arItem["ID"];?>" data-param-fid="<?=$arItemIDs["strMainID"];?>" data-param-item_href="<?=urlencode($arItem["DETAIL_PAGE_URL"]);?>" title="<?=$fast_view_text;?>" data-name="fast_view">
+													</i>
+												</span>
+											</div>
+										<?endif;?>
+									</div>
+								<?endif;?>
 									<?if($arItem["OFFERS"]){?>
 										<?if(!empty($arItem['OFFERS_PROP'])){?>
 											<div class="bx_catalog_item_scu wrapper_sku" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['PROP_DIV']; ?>" data-site_id="<?=SITE_ID;?>" data-id="<?=$arItem["ID"];?>" data-offer_id="<?=$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["ID"];?>" data-propertyid="<?=$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["PROPERTIES"]["CML2_LINK"]["ID"];?>" data-offer_iblockid="<?=$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["IBLOCK_ID"];?>">
@@ -443,9 +442,8 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											<?$arItemJSParams=CNext::GetSKUJSParams($arResult, $arParams, $arItem);?>
 										<?}?>
 									<?}?>
-								</div>
-								<?if(!$arItem["OFFERS"] /*|| $arParams['TYPE_SKU'] !== 'TYPE_1'*/):?>
-									<?if($arItem['PROPERTIES']['PROP_SOON']['VALUE'] == 'N' || !$arItem['PROPERTIES']['PROP_SOON']['VALUE']):?>
+									<?if(!$arItem["OFFERS"] /*|| $arParams['TYPE_SKU'] !== 'TYPE_1'*/):?>
+									<?if($arItem['PROPERTIES']['PROP_SOON']['VALUE'] === 'N'):?>
 									<div class="counter_wrapp <?=($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '')?>">
 										<?if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>
 											<div class="counter_block" data-offers="<?=($arItem["OFFERS"] ? "Y" : "N");?>" data-item="<?=$arItem["ID"];?>">
@@ -461,7 +459,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 										</div>
 									</div>
 									<?else:?>
-										<span>Скоро в продаже</span>
+										<span class="prop_soon btn">Скоро в продаже</span>
 									<?endif;?>
 									<?
 									if(isset($arItem['PRICE_MATRIX']) && $arItem['PRICE_MATRIX']) // USE_PRICE_COUNT
@@ -537,7 +535,14 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 										</div>
 									</div>
 								<?endif;?>
+								</div>
+								
+								
 							</div>
+
+							<!-- <div class="footer_button <?=($arItem["OFFERS"] && $arItem['OFFERS_PROP'] ? 'has_offer_prop' : '');?> inner_content js_offers__<?=$arItem['ID'];?>">
+								
+							</div> -->
 						</div>
 					</div>
 				</div>
