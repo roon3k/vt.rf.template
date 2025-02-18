@@ -740,6 +740,10 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     
     width: 100%;
 }
+
+.counter_wrapp.wrapp_ctl .counter_block {
+    border-radius: 15px;
+}
 .catalog_item .item-title a, .catalog_item .item-title a span, .view-item .item-title a span {
     padding-top: 0;
 }
