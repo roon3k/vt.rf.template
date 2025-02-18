@@ -3,7 +3,7 @@
 		<section class="page-top maxwidth-theme <?CNext::ShowPageProps('TITLE_CLASS');?>">
 			<div class="page-top-main">
 				<?=$APPLICATION->ShowViewContent('product_share')?>
-				<h1 id="pagetitle"><?$APPLICATION->ShowTitle(false)?></h1>
+				<!-- <h1 id="pagetitle"><?$APPLICATION->ShowTitle(false)?></h1> -->
 			</div>
 			<div id="navigation">
 				<?$APPLICATION->IncludeComponent("bitrix:breadcrumb", "next", array(

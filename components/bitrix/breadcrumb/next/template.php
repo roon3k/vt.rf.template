@@ -33,7 +33,7 @@ if($arResult){
 			}
 		}
 		if($index){
-			$strReturn .= '<span class="separator">-</span>';
+			$strReturn .= '<span class="separator"><svg xmlns="http://www.w3.org/2000/svg" width="10px" height="10px" viewBox="0 0 24 24"><path fill="currentColor" d="M4 11v2h12v2h2v-2h2v-2h-2V9h-2v2zm10-4h2v2h-2zm0 0h-2V5h2zm0 10h2v-2h-2zm0 0h-2v2h2z"/></svg></span>';
 		}
 		if($arItem["LINK"] <> "" && $arItem['LINK'] != GetPagePath() && $arItem['LINK']."index.php" != GetPagePath() || $arSubSections){
 			$strReturn .= '<div class="bx-breadcrumb-item'.($bMobileBreadcrumbs ? ' bx-breadcrumb-item--mobile' : '').($bShowMobileArrow ? ' bx-breadcrumb-item--visible-mobile' : '').($arSubSections ? ' drop' : '').($bLast ? ' cat_last' : '').'" id="bx_breadcrumb_'.$index.'" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">';

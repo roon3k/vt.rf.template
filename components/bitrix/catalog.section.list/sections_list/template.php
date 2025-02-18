@@ -6,7 +6,7 @@
 		$this->AddEditAction($arItems['ID'], $arItems['EDIT_LINK'], CIBlock::GetArrayByID($arItems["IBLOCK_ID"], "SECTION_EDIT"));
 		$this->AddDeleteAction($arItems['ID'], $arItems['DELETE_LINK'], CIBlock::GetArrayByID($arItems["IBLOCK_ID"], "SECTION_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_SECTION_DELETE_CONFIRM')));
 	?>
-		<div class="item_block col-md-6 col-sm-6">
+		<div class="item_block col-md-4 col-sm-4">
 			<div class="section_item item" id="<?=$this->GetEditAreaId($arItems['ID']);?>">
 				<table class="section_item_inner mobile_url">
 					<tr data-url="<?=$arItems["SECTION_PAGE_URL"]?>">

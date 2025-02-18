@@ -14,7 +14,7 @@
 			</div>
 			<div class="page-top-main">
 				<?=$APPLICATION->ShowViewContent('product_share')?>
-				<h1 id="pagetitle"><?$APPLICATION->ShowTitle(false)?></h1>
+				<!-- <h1 id="pagetitle"><?$APPLICATION->ShowTitle(false)?></h1> -->
 			</div>
 		</section>
 	</div>
