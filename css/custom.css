@@ -610,6 +610,12 @@ body .tabs_slider .catalog_item:hover .inner_wrap {
     justify-content: space-between;
 	align-items: center;
 }
+.new_phone {
+    color:#fff;
+}
+.new_phone:hover {
+    color:#287370;
+}
 .contacts__item.contacts__item--address {
     display: flex;
     -ms-flex-align: center;
@@ -774,3 +780,23 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     margin: 0 4px;
     background: repeating-linear-gradient(to right, #ddd, #ddd 2px, transparent 2px, transparent 4px);
 }
+.catalog_detail .item_main_info, .catalog_detail .counter_wrapp .counter_block {
+    border-radius: 15px;
+}
+
+.tabs ul.nav.nav-tabs li:first-child a {
+    border-top-left-radius: 15px;
+}
+.tabs ul.nav.nav-tabs li:last-child a{
+    border-top-right-radius: 15px;
+}
+.tabs .nav-tabs li.active a:before {
+    width: 95%;
+    left: 8px;
+    display:none;
+}
+.tabs .nav-tabs li.active:last-child a:before {
+    width: 95%;
+    right: 8px;
+}
+

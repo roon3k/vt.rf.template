@@ -1161,8 +1161,8 @@ if ($blockViewType) {
 			);?>
 		<?endif;?>
 
-	<?//goods?>
-	<?elseif($code == 'goods' && !$bViewBlock):?>
+	<?//goods show off?>
+	<?elseif($code == 'goods' && !$bViewBlock && false):?>
 
 			<?if(
 				$bAccessories ||
@@ -1593,7 +1593,7 @@ if ($blockViewType) {
 		<?endif;?>
 
 	<?//recomend_goods?>
-	<?elseif($code == 'recomend_goods' && $bViewBlock):?>
+	<?elseif($code == 'recomend_goods' && $bViewBlock && nil):?>
 		<?if($bBigData):?>
 			<div class="wraps hidden_print addon_type drag_block_detail separate_block">
 				<hr>
