@@ -444,7 +444,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 									<?}?>
 									<?if(!$arItem["OFFERS"] /*|| $arParams['TYPE_SKU'] !== 'TYPE_1'*/):?>
 									<?if($arItem['PROPERTIES']['PROP_SOON']['VALUE'] === 'N'):?>
-									<div class="counter_wrapp <?=($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '')?>">
+									<div class="counter_wrapp wrapp_ctl <?=($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '')?>">
 										<?if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>
 											<div class="counter_block" data-offers="<?=($arItem["OFFERS"] ? "Y" : "N");?>" data-item="<?=$arItem["ID"];?>">
 												<span class="minus" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['QUANTITY_DOWN']; ?>" <?=isset($arAddToBasketData["SET_MIN_QUANTITY_BUY"]) && $arAddToBasketData["SET_MIN_QUANTITY_BUY"] ? "data-min='".$arAddToBasketData["MIN_QUANTITY_BUY"]."'" : "";?>>-</span>
@@ -495,7 +495,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IBLOCK_ID'] = $arParams['IBLOCK_ID'];
 											//$arAddToBasketData = CNext::GetAddToBasketArray($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]], $totalCount, $arParams["DEFAULT_COUNT"], $arParams["BASKET_URL"], false, $arItemIDs["ALL_ITEM_IDS"], 'small', $arParams);
 											?>
-											<div class="counter_wrapp">
+											<div class="counter_wrapp wrapp_ctl">
 												<?if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>
 													<div class="counter_block" data-item="<?=$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["ID"];?>">
 														<span class="minus" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['QUANTITY_DOWN']; ?>" <?=isset($arAddToBasketData["SET_MIN_QUANTITY_BUY"]) && $arAddToBasketData["SET_MIN_QUANTITY_BUY"] ? "data-min='".$arAddToBasketData["MIN_QUANTITY_BUY"]."'" : "";?>>-</span>
@@ -529,7 +529,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											<?endif;?>
 										<?}?>
 									<?}?>
-									<div class="counter_wrapp ce_cmp_visible">
+									<div class="counter_wrapp wrapp_ctl ce_cmp_visible">
 										<div id="<?=$arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']."_cmp"; ?>" class="button_block wide">
 											<a class="btn btn-default basket read_more" rel="nofollow" data-item="<?=$arItem['ID']?>" href="<?=$arItem['DETAIL_PAGE_URL']?>"><?=GetMessage('CATALOG_READ_MORE')?></a>
 										</div>

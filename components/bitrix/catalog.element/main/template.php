@@ -1568,13 +1568,13 @@ if ($arResult['CATALOG'] && $actualItem['CAN_BUY'] && $arParams['USE_PREDICTION'
 	</div>
 <? else: ?>
 	<? if ($arParams["PROPERTIES_DISPLAY_TYPE"] != "TABLE"): ?>
-		<div class="props_block" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>">
+		<div class="props_block flex-props" id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_DIV']; ?>">
 			<? foreach ($arResult["PROPERTIES"] as $propCode => $arProp): ?>
 				<? if (isset($arResult["DISPLAY_PROPERTIES"][$propCode])): ?>
 					<? $arProp = $arResult["DISPLAY_PROPERTIES"][$propCode]; ?>
 					<? if (!in_array($arProp["CODE"], array("SERVICES", "BRAND", "HIT", "RECOMMEND", "NEW", "STOCK", "VIDEO", "VIDEO_YOUTUBE", "CML2_ARTICLE"))): ?>
 						<? if ((!is_array($arProp["DISPLAY_VALUE"]) && strlen($arProp["DISPLAY_VALUE"])) || (is_array($arProp["DISPLAY_VALUE"]) && implode('', (array)$arProp["DISPLAY_VALUE"]))): ?>
-							<div class="char" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
+							<div class="char flex-props-item" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue">
 								<div class="char_name">
 									<? if ($arProp["HINT"] && $arParams["SHOW_HINTS"] == "Y"): ?><div class="hint"><span class="icon"><i>?</i></span>
 											<div class="tooltip"><?= $arProp["HINT"] ?></div>
@@ -1583,6 +1583,7 @@ if ($arResult['CATALOG'] && $actualItem['CAN_BUY'] && $arParams['USE_PREDICTION'
 										<span itemprop="name"><?= $arProp["NAME"] ?></span>
 									</div>
 								</div>
+								<div class="dots"></div>
 								<div class="char_value" itemprop="value">
 									<? if (count((array)$arProp["DISPLAY_VALUE"]) > 1): ?>
 										<?= implode(', ', (array)$arProp["DISPLAY_VALUE"]); ?>

@@ -458,7 +458,7 @@
 								<? if (!$arItem["OFFERS"]): ?>
 									<? if ($arParams["SHOW_BUY_BTN"] == "Y"): ?>
 										<div
-											class="counter_wrapp <?= ($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '') ?>">
+											class="counter_wrapp wrapp_ctl <?= ($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '') ?>">
 											<? if (($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]): ?>
 												<div class="counter_block" data-offers="<?= ($arItem["OFFERS"] ? "Y" : "N"); ?>"
 													data-item="<?= $arItem["ID"]; ?>">
@@ -479,7 +479,7 @@
 											</div>
 										</div>
 									<? else: ?>
-										<div class="counter_wrapp">
+										<div class="counter_wrapp wrapp_ctl">
 											<div class="button_block">
 												<!--noindex-->
 												<a href="<?= $arItem["DETAIL_PAGE_URL"] ?>"
@@ -522,7 +522,7 @@
 											$arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IBLOCK_ID'] = $arParams['IBLOCK_ID'];
 											//$arAddToBasketData = CNext::GetAddToBasketArray($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]], $totalCount, $arParams["DEFAULT_COUNT"], $arParams["BASKET_URL"], false, $arItemIDs["ALL_ITEM_IDS"], 'small', $arParams);
 											?>
-											<div class="counter_wrapp">
+											<div class="counter_wrapp wrapp_ctl">
 												<? if (($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]): ?>
 													<div class="counter_block"
 														data-item="<?= $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["ID"]; ?>">
@@ -563,7 +563,7 @@
 											<? endif; ?>
 										<? } ?>
 									<? } ?>
-									<div class="counter_wrapp ce_cmp_visible">
+									<div class="counter_wrapp wrapp_ctl ce_cmp_visible">
 										<div id="<?= $arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS'] . "_cmp"; ?>"
 											class="button_block wide">
 											<a class="btn btn-default basket read_more" rel="nofollow"
