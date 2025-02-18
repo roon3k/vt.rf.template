@@ -1,5 +1,9 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 <?$this->setFrameMode(true);?>
+<?php
+global $USER;
+if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
+?>
 <?$bCompactViewMobile = $arParams['COMPACT_VIEW_MOBILE'] === 'Y';?>
 <?if($arResult['SECTIONS']):?>
 	<!-- sections_wrapper -->
@@ -80,4 +84,5 @@
 			});
 		});
 	</script>
+<?endif;?>
 <?endif;?>

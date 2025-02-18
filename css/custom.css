@@ -662,3 +662,20 @@ html, body {
 .menu-row .mega-menu table td.wide_menu .dropdown-menu>li>a, .menu-row .mega-menu table td.wide_menu .menu-wrapper>li>a {
     line-height: 1.2!important;
 }
+.menu-row .mega-menu table td.wide_menu>.wrap>.dropdown-menu {
+    border-radius: 0 0 15px 15px;
+}
+.menu-row .mega-menu table td.wide_menu>.wrap>.dropdown-menu .menu-wrapper>li.has_img {
+    min-height: 160px;
+}
+.popup .close {
+    right: 30px;
+    top: 30px;
+}
+input[type=email], input[type=password], input[type=tel], input[type=text], select, textarea {
+    border-radius: 15px;
+    padding: 5px 13px 7px;
+}
+.btn {
+    border-radius: 15px;
+}
