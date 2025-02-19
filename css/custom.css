@@ -852,6 +852,12 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .br-tb-l{
     border-radius: 15px 0 0 0;
 }
-br-tb-r{
+.br-tb-r{
     border-radius: 0 15px 0 0;
+}
+.br-bb-l {
+    border-radius: 0 0 0 15px;
+}
+.br-bb-r {
+    border-radius: 0 0 15px 0;
 }

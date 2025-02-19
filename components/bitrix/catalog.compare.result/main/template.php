@@ -474,8 +474,11 @@ $bOrderViewBasket = $arParams['ORDER_VIEW'];
 									<? if ($arShowFileds || $arShowOfferFileds || $arShowProps || $arShowOfferProps): ?>
 										<div class="catalog-compare__props-slider owl-carousel owl-theme"
 											data-plugin-options='{"nav": false, "dots": false, "autoplay" : false, "autoplayTimeout" : "3000", "smartSpeed":500, "responsiveClass": true, "withSlide1": "catalog-compare__items", "rewind": true, "margin": -1, "responsive":{"0":{"items": 2},"768":{"items": 3},"992":{"items": 4},"1200":{"items": 5}}}'>
-											<? foreach ($arSection["ITEMS"] as $arElement) { ?>
-												<div class="catalog-compare__item-props" data-id="<?= $arElement["ID"]; ?>">
+											<? foreach ($arSection["ITEMS"] as $index => $arElement) { ?>
+												<div class="catalog-compare__item-props
+													<?php if ($index === 0) echo ' br-bb-l'; ?>
+            										<?php if ($index === count($arSection["ITEMS"]) - 1) echo ' br-bb-r'; ?>"
+			 										data-id="<?= $arElement["ID"]; ?>">
 													<? if ($arShowFileds): ?>
 														<? foreach ($arShowFileds as $code => $arProp): ?>
 															<div class="catalog-compare__prop-line font_xs">
