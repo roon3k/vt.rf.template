@@ -846,6 +846,6 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .basket-items-list-item-wrapper:last-child {
     border-bottom: 0;
 }
-.owl-item div .catalog_block.catalog_item {
+.catalog-block__item:first-child{
     border-radius: 15px 0 0 15px;
 }
