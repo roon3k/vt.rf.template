@@ -443,7 +443,7 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 										<?}?>
 									<?}?>
 									<?if(!$arItem["OFFERS"] /*|| $arParams['TYPE_SKU'] !== 'TYPE_1'*/):?>
-									<!-- <?if($arItem['PROPERTIES']['PROP_SOON']['VALUE'] === 'N'):?> -->
+									<!--?if($arItem['PROPERTIES']['PROP_SOON']['VALUE'] === 'N'):? -->
 									<div class="counter_wrapp wrapp_ctl <?=($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" ? 'woffers' : '')?>">
 										<?if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>
 											<div class="counter_block" data-offers="<?=($arItem["OFFERS"] ? "Y" : "N");?>" data-item="<?=$arItem["ID"];?>">
@@ -458,9 +458,9 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											<!--/noindex-->
 										</div>
 									</div>
-									<!-- <?else:?>
+									<!-- ?else:?>
 										<span class="prop_soon btn">Скоро в продаже</span>
-									<?endif;?> -->
+									endif;? -->
 									<?
 									if(isset($arItem['PRICE_MATRIX']) && $arItem['PRICE_MATRIX']) // USE_PRICE_COUNT
 									{?>
