@@ -475,25 +475,22 @@ $bOrderViewBasket = $arParams['ORDER_VIEW'];
 										<div class="catalog-compare__props-slider owl-carousel owl-theme"
 											data-plugin-options='{"nav": false, "dots": false, "autoplay" : false, "autoplayTimeout" : "3000", "smartSpeed":500, "responsiveClass": true, "withSlide1": "catalog-compare__items", "rewind": true, "margin": -1, "responsive":{"0":{"items": 2},"768":{"items": 3},"992":{"items": 4},"1200":{"items": 5}}}'>
 											<? foreach ($arSection["ITEMS"] as $index => $arElement) { ?>
-												<div class="catalog-compare__item-props
-													<?php if ($index === 0) echo ' br-bb-l'; ?>
-            										<?php if ($index === count($arSection["ITEMS"]) - 1) echo ' br-bb-r'; ?>"
-			 										data-id="<?= $arElement["ID"]; ?>">
+												<div class="catalog-compare__item-props" data-id="<?= $arElement["ID"]; ?>">
 													<? if ($arShowFileds): ?>
 														<? foreach ($arShowFileds as $code => $arProp): ?>
-															<div class="catalog-compare__prop-line font_xs">
-																<span
-																	class="catalog-compare__prop-name muted"><?= GetMessage("IBLOCK_FIELD_" . $code); ?></span>
-																<? if ($arResult["ALL_FIELDS"][$code]) { ?>
-																	<span
-																		onclick="CatalogCompareObj.MakeAjaxAction('<?= CUtil::JSEscape($arResult['ALL_FIELDS'][$code]['ACTION_LINK']); ?>')"
-																		class="remove colored_theme_hover_text stroke-use-grey stroke-theme-use-svg-hover">
-																		<i></i>
-																	</span>
-																<? } ?>
-																<?= $arElement["FIELDS"][$code]; ?>
-															</div>
-														<? endforeach; ?>
+    <div class="catalog-compare__prop-line font_xs
+        <?php if ($index === 0 && $code === array_key_last($arShowFileds)) echo ' br-bb-l'; ?>
+        <?php if ($index === count($arSection["ITEMS"]) - 1 && $code === array_key_last($arShowFileds)) echo ' br-bb-r'; ?>">
+        <span class="catalog-compare__prop-name muted"><?= GetMessage("IBLOCK_FIELD_" . $code); ?></span>
+        <? if ($arResult["ALL_FIELDS"][$code]) { ?>
+            <span onclick="CatalogCompareObj.MakeAjaxAction('<?= CUtil::JSEscape($arResult['ALL_FIELDS'][$code]['ACTION_LINK']); ?>')"
+                  class="remove colored_theme_hover_text stroke-use-grey stroke-theme-use-svg-hover">
+                <i></i>
+            </span>
+        <? } ?>
+        <?= $arElement["FIELDS"][$code]; ?>
+    </div>
+<? endforeach; ?>
 													<? endif; ?>
 
 													<? if ($arShowOfferFileds): ?>
