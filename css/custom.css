@@ -849,3 +849,9 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .owl-item:first-child div .catalog_block.catalog_item {
     border-radius: 15px 0 0 15px;
 }
+.br-tb-l{
+    border-radius: 15px 0 0 0;
+}
+br-tb-r{
+    border-radius: 0 15px 0 0;
+}
