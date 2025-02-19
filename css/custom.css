@@ -816,7 +816,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .module_products_list td.item-name-cell {
     min-width: 370px;
 }
-.basket-checkout-container, .list-type-block.item-views.wide_img .item>.image, .detail img, .order-block, .ask_a_question, .ask_a_question .inner, .notice .notice--link{
+.ajax_load.block .counter_wrapp .button_block, .ajax_load.block .counter_wrapp .counter_block, .basket-checkout-container, .list-type-block.item-views.wide_img .item>.image, .detail img, .order-block, .ask_a_question, .ask_a_question .inner, .notice .notice--link{
     border-radius: 15px;
 }
 .order-block {
@@ -824,12 +824,16 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 }
 #basket-root .basket-items-list-wrapper  {
     border-top: 0;
-    border-right: 1px solid #e2dfdf;
-    border-left: 1px solid #e2dfdf;
+    border-right: 0;
+    border-left: 0;
     border-bottom: 1px solid #e2dfdf;
     border-radius: 0 0 15px 15px;
 }
-
+.basket-items-list-container {
+    border-right: 1px solid #e2dfdf;
+    border-left: 1px solid #e2dfdf;
+    border-radius: 0 0 15px 15px;
+}
 .basket-items-list-item-amount-outer .basket-item-amount-filed {
     border-radius: 0;
 }
@@ -861,3 +865,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .br-bb-r {
     border-radius: 0 0 15px 0;
 }
+.wraps.goods-block.with-padding.block.ajax_load.catalog, .bigdata_recommended_products_items {
+    display: none;
+}
+
