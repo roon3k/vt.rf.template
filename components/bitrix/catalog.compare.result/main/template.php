@@ -85,14 +85,14 @@ $bOrderViewBasket = $arParams['ORDER_VIEW'];
 						<? if ($arResult["SHOW_FIELDS"]): ?>
 							<div class="catalog-compare__items catalog_block ajax_load items block flexbox flexbox--row owl-carousel owl-bg-nav visible-nav owl-carousel--light owl-carousel--outer-dots owl-carousel--button-wide owl-carousel--button-offset-half owl-carousel--after-offset-1"
 								data-plugin-options='{"nav": true, "autoplay" : false, "dots": false, "autoplayTimeout" : "3000", "smartSpeed":500, "responsiveClass": true, "withSlide": "catalog-compare__props-slider", "rewind": true, "margin": -1, "responsive":{"0":{"items": 2},"768":{"items": 3},"992":{"items": 4},"1200":{"items": 5}}}'>
-								<? foreach ($arSection["ITEMS"] as &$arElement): ?>
+								<? foreach ($arSection["ITEMS"] as $index => &$arElement): ?>
 									<? $arElement['ARTICLE'] = $arElement['OFFER_DISPLAY_PROPERTIES']['ARTICLE'] ?? ($arElement['DISPLAY_PROPERTIES']['CML2_ARTICLE'] ?? []); ?>
 									<div class="catalog-block__wrapper height-100">
 										<div class="catalog-block__item catalog_item bordered bg-theme-parent-hover border-theme-parent-hover js-notice-block
 											<?php if ($index === 0)
 												echo ' br-tb-l'; ?>
 											<?php if ($index === count($arSection["ITEMS"]) - 1)
-												echo ' br-tb-r'; ?>">
+												echo ' br-tb-r'; ?>"
 											id="<?= $this->GetEditAreaId($arElement['ID']); ?>">
 											<div class="catalog-block__inner flexbox height-100">
 												<span
