@@ -732,6 +732,9 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     display: none;
     opacity: 0;
 }
+.d-relative .like_icons .wish_item_button {
+    padding: 0 5px;
+}
 .counter_wrapp.wrapp_ctl {
     position: absolute;
     top: 50%;
@@ -869,3 +872,19 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     display: none;
 }
 
+.catalog_section_list {
+    border-radius: 15px;
+    border: 1px solid #f2f2f2;
+}
+.catalog_section_list .section_item {
+    border-right: 1px solid #e2dfdf;
+}
+.catalog_section_list .section_ite:last-child {
+    border-bottom: 0;
+}
+.reviews.item-views.list-mode .item {
+    border-radius: 15px;
+}
+.contacts.contacts-page-map-overlay .contacts-wrapper {
+    border-radius: 15px;
+}

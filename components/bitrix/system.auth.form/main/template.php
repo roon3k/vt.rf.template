@@ -61,7 +61,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 								<div class="row" data-sid="USER_LOGIN_POPUP">
 									<div class="form-group animated-labels input-filed">
 										<div class="col-md-12">
-											<label for="USER_LOGIN_POPUP"><?=GetMessage("AUTH_LOGIN")?> <span class="required-star">*</span></label>
+											<label for="USER_LOGIN_POPUP"><?=GetMessage("AUTH_LOGIN")?> </label>
 											<div class="input">
 												<input type="text" name="USER_LOGIN" id="USER_LOGIN_POPUP" class="form-control required" maxlength="50" value="<?=$arResult["USER_LOGIN"]?>" autocomplete="on" tabindex="1"/>
 											</div>
@@ -71,7 +71,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 								<div class="row" data-sid="USER_PASSWORD_POPUP">
 									<div class="form-group animated-labels input-filed">
 										<div class="col-md-12">
-											<label for="USER_PASSWORD_POPUP"><?=GetMessage("AUTH_PASSWORD")?> <span class="required-star">*</span></label>
+											<label for="USER_PASSWORD_POPUP"><?=GetMessage("AUTH_PASSWORD")?> </label>
 											<div class="input">
 												<input type="password" name="USER_PASSWORD" id="USER_PASSWORD_POPUP" class="form-control required password" maxlength="50" value="" autocomplete="on" tabindex="2"/>
 											</div>
@@ -80,7 +80,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 								</div>
 								<?if($arResult["CAPTCHA_CODE"] && $arResult['ONLY_PHONE_CAPTCHA'] !== 'Y'):?>
 									<div class="form-control bg register-captcha captcha-row clearfix">
-										<label><span><?=GetMessage("AUTH_CAPTCHA_PROMT")?>&nbsp;<span class="star">*</span></span></label>
+										<label><span><?=GetMessage("AUTH_CAPTCHA_PROMT")?>&nbsp;</span></label>
 										<div class="captcha_image">
 											<img src="/bitrix/tools/captcha.php?captcha_sid=<?=$arResult["CAPTCHA_CODE"]?>" border="0" />
 											<input type="hidden" name="captcha_sid" class="captcha_sid" value="<?=$arResult["CAPTCHA_CODE"]?>" />
@@ -103,7 +103,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 									<div class="buttons clearfix">
 										<input type="submit" class="btn btn-default bold" name="Login" value="<?=GetMessage("AUTH_LOGIN_BUTTON")?>" tabindex="4" />
 									</div>
-									<div class="form-control wrapper-required-text">
+									<div class="form-control wrapper-required-text" style="display:none;">
 										<?$APPLICATION->IncludeFile(SITE_DIR."include/required_message.php", Array(), Array("MODE" => "html"));?>
 									</div>
 								</div>
@@ -131,7 +131,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 													<div class="row" data-sid="SMS_CODE_POPUP">
 														<div class="form-group animated-labels input-filed">
 															<div class="col-md-12">
-																<label for="SMS_CODE_POPUP"><?=GetMessage("AUTH_FIELD_SMS_CODE")?> <span class="required-star">*</span></label>
+																<label for="SMS_CODE_POPUP"><?=GetMessage("AUTH_FIELD_SMS_CODE")?> </label>
 																<div class="input">
 																	<input type="text" name="SMS_CODE" id="SMS_CODE_POPUP" class="form-control" maxlength="50" value="<?=htmlspecialcharsbx($arResult['SMS_CODE'])?>" autocomplete="off" tabindex="1" required />
 																</div>
@@ -167,7 +167,7 @@ if($arResult['PHONE_AUTH_PARAMS']['USE']){
 													<div class="row" data-sid="USER_PHONE_NUMBER_POPUP">
 														<div class="form-group animated-labels input-filed">
 															<div class="col-md-12">
-																<label for="USER_PHONE_NUMBER_POPUP"><?=GetMessage("auth_phone_number")?> <span class="required-star">*</span></label>
+																<label for="USER_PHONE_NUMBER_POPUP"><?=GetMessage("auth_phone_number")?> </label>
 																<div class="input">
 																	<input type="tel" name="USER_PHONE_NUMBER" id="USER_PHONE_NUMBER_POPUP" class="form-control phone" maxlength="50" value="<?=htmlspecialcharsbx($arResult['USER_PHONE_NUMBER'])?>" autocomplete="on" tabindex="1" required />
 																</div>
