@@ -16,6 +16,7 @@
 		'CURRENCIES' => $currencyList
 	);
 	unset($currencyList, $templateLibrary);
+	//echo "<pre>";print_r($arResult["ITEMS"]);echo "</pre>";
 	?>
 	<? if (!isset($arParams["AJAX_REQUEST"])) { ?>
 		<div class="top_wrapper items_wrapper">

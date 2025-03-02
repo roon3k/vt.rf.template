@@ -22,7 +22,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 <? if ($arResult['SECTIONS']): ?>
 	<div class="new_section_tab_block <?= ($bCompactViewMobile ? 'compact-view-mobile' : '') ?>">
 		<div class="list items">
-			<div class="row margin0 flexbox slick-slider" id="slider">
+			<div id="section-carousel" class="owl-carousel">
 				<?php
 				// Перемещаем элемент с ID, равным $arResult['SECTION']['ID'], на первое место
 				foreach ($arResult['SECTIONS'] as $key => $arSection) {
@@ -39,7 +39,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				// Теперь выводим секции
 				foreach (array_reverse($arResult['SECTIONS']) as $arSection): ?>
 				
-					<div class="col-md-3 col-sm-4 col-xs-<?= ($bCompactViewMobile ? 12 : 6) ?> new_section_tab" id="sect<?= $arParams['SECTION_VER'] ?>" data-sect="<?= $arSection['ID'] ?>">
+					<div class="item-section" data-sect="<?= $arSection['ID'] ?>">
 						<div class="item <?= ($arSection['ID'] == $arParams['SECTION_VER'] ? 'active' : '') ?>" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
 							<div class="img shine">
 								<?php if ($arSection["PICTURE"]): ?>
@@ -58,64 +58,199 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						</div>
 					</div>
 				<?php endforeach; ?>
-				
-			</div>
-			<div class="left_gif">
-				<img src="/images/left.GIF" style="width:36px;">
 			</div>
 		</div>
 	</div>
 	
 	<script>
 		$(document).ready(function() {
-			var $slider = $('.slick-slider');
-			// $slider.on('init', function(event, slick){
-			// 	setTimeout(function(){
-			// 		scrollToElementById('sect' + <?= $arParams['SECTION_VER'] ?>);
-			// 	}, 100);
-			// });
-
-			// Прокрутка до элемента с id sect130 после инициализации слайдера
-
-			$slider.slick({
-				dots: false,
-				arrows: true,
-				slidesToShow: 4,
-				centerMode: true,
-				prevArrow: `<button type="button" class="slick-prev"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg></button>`,
-				nextArrow: `<button type="button" class="slick-next"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg></button>`,
-				slidesToScroll: 1,
-				responsive: [{	
-						breakpoint: 768,
-						settings: {
-							arrows: true,
-							centerMode: true,
-							adaptiveHeight: true,
-							slidesToShow: 3,
-							slidesToScroll: 1,
-						}
-					},
-					{
-						breakpoint: 480,
-						settings: {
-							arrows: true,
-							centerMode: true,
-							slidesToShow: 2,
-							adaptiveHeight: true,
-							slidesToScroll: 1,
-						}
-					}
-				]
+			var $carousel = $('#section-carousel');
+			
+			// Предзагрузка изображений перед инициализацией карусели
+			var images = [];
+			$('#section-carousel img').each(function() {
+				var imgSrc = $(this).attr('src');
+				if (imgSrc) {
+					var img = new Image();
+					img.src = imgSrc;
+					images.push(img);
+				}
 			});
-
-			// function scrollToElementById(elementId) {
-			// 	var targetElement = $('#' + elementId);
-			// 	if (targetElement.length) {
-			// 		var slideIndex = targetElement.parent().children().index(targetElement);
-			// 		$slider.slick('slickGoTo', slideIndex);
-			// 	}
-			// }
+			
+			// Находим активный элемент и его индекс
+			var activeItem = $('.item-section[data-sect="<?= $arParams['SECTION_VER'] ?>"]');
+			var activeIndex = activeItem.length ? activeItem.index() : 0;
+			
+			// Инициализируем карусель
+			$carousel.owlCarousel({
+				items: 4,
+				loop: true,
+				margin: 20,
+				nav: true,
+				dots: false,
+				center: true,
+				startPosition: activeIndex, // Устанавливаем начальную позицию
+				navText: [
+					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>`,
+					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>`
+				],
+				responsive: {
+					0: {
+						items: 2,
+						margin: 10,
+						center: true
+					},
+					480: {
+						items: 2,
+						margin: 15,
+						center: true
+					},
+					768: {
+						items: 3,
+						margin: 15,
+						center: true
+					},
+					992: {
+						items: 4,
+						margin: 20,
+						center: true
+					}
+				},
+				onInitialized: function() {
+					// Обновляем карусель без пересборки
+					setTimeout(function() {
+						$carousel.trigger('refresh.owl.carousel');
+					}, 100);
+				}
+			});
+			
+			// Добавляем обработчик клика на элементы
+			$('.item-section').on('click', function(e) {
+				// Если клик был не по ссылке, а по самому элементу
+				if (!$(e.target).is('a')) {
+					e.preventDefault();
+					var index = $(this).index();
+					
+					// Плавно прокручиваем к выбранному элементу
+					$carousel.trigger('to.owl.carousel', [index, 300]);
+					
+					// Добавляем класс active выбранному элементу и убираем у остальных
+					$('.item-section .item').removeClass('active');
+					$(this).find('.item').addClass('active');
+					
+					// Если нужно, можно также обновить URL страницы
+					// var sectionUrl = $(this).find('a').attr('href');
+					// history.pushState(null, null, sectionUrl);
+				}
+			});
 		});
 	</script>
+	
+	<style>
+	/* Стили для карусели разделов */
+	#section-carousel {
+		padding: 0 40px;
+		position: relative;
+	}
+
+	#section-carousel .owl-nav {
+		position: absolute;
+		top: 50%;
+		width: 100%;
+		left: 0;
+		transform: translateY(-50%);
+		display: flex;
+		justify-content: space-between;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	#section-carousel .owl-prev, 
+	#section-carousel .owl-next {
+		width: 40px;
+		height: 40px;
+		background: #fff !important;
+		border-radius: 50% !important;
+		box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+		pointer-events: auto;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	#section-carousel .owl-prev {
+		left: -20px;
+	}
+
+	#section-carousel .owl-next {
+		right: -20px;
+	}
+
+	#section-carousel .owl-prev:hover, 
+	#section-carousel .owl-next:hover {
+		background: #f5f5f5 !important;
+	}
+
+	#section-carousel .owl-item {
+		padding: 10px;
+	}
+
+	.item-section {
+		text-align: center;
+	}
+
+	.item-section .item {
+		background: #fff;
+		border-radius: 12px;
+		padding: 15px;
+		transition: all 0.3s ease;
+		height: 100%;
+	}
+
+	.item-section .item.active {
+		box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+		border: 2px solid #4086F1;
+	}
+
+	.item-section .item:hover {
+		box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+	}
+
+	.item-section .img {
+		margin-bottom: 10px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.item-section .img img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.item-section .name {
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 1.3;
+	}
+
+	/* Удаляем ненужные элементы */
+	.left_gif {
+		display: none;
+	}
+
+	/* Адаптивные стили */
+	@media (max-width: 768px) {
+		.item-section .item {
+			padding: 10px;
+		}
+		
+		.item-section .name {
+			font-size: 13px;
+		}
+	}
+	</style>
 <? endif; ?>
 <? endif; ?>

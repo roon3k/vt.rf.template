@@ -15,14 +15,14 @@ if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
 			</div>
 		<?endif;?>
 		<div class="list items">
-			<div class="row margin0 flexbox slick-slider">
+			<div id="front-sections-carousel" class="owl-carousel">
 			<?$reversedSections = array_reverse($arResult['SECTIONS']); // Обратный порядок разделов ?>
 				<?foreach($reversedSections as $arSection):	
 				
 					$this->AddEditAction($arSection['ID'], $arSection['EDIT_LINK'], CIBlock::GetArrayByID($arSection["IBLOCK_ID"], "SECTION_EDIT"));
 					$this->AddDeleteAction($arSection['ID'], $arSection['DELETE_LINK'], CIBlock::GetArrayByID($arSection["IBLOCK_ID"], "SECTION_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_SECTION_DELETE_CONFIRM')));?>
 					
-					<div class="col-md-3 col-sm-4 col-xs-<?=($bCompactViewMobile ? 12 : 6)?> new_section_tab">
+					<div class="item-section">
 						<div class="item" id="<?=$this->GetEditAreaId($arSection['ID']);?>">
 							<?if ($arParams["SHOW_SECTION_LIST_PICTURES"]!="N"):?>
 								<div class="img shine">
@@ -45,44 +45,161 @@ if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
 					</div>
 				<?endforeach;?>
 			</div>
-			<div class="left_gif">
-				<img src="/images/left.GIF" style="width:36px;">
-			</div>
 		</div>
 	</div>
 	<script>
 		$(document).ready(function(){
-			$('.slick-slider').slick({
+			var $carousel = $('#front-sections-carousel');
+			
+			// Предзагрузка изображений перед инициализацией карусели
+			var images = [];
+			$('#front-sections-carousel img').each(function() {
+				var imgSrc = $(this).attr('src');
+				if (imgSrc) {
+					var img = new Image();
+					img.src = imgSrc;
+					images.push(img);
+				}
+			});
+			
+			$carousel.owlCarousel({
+				items: 4,
+				loop: true,
+				margin: 20,
+				nav: true,
 				dots: false,
-				arrows: true,
-				slidesToShow: 4,
-				prevArrow: `<button type="button" class="slick-prev"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg></button>`,
-				nextArrow: `<button type="button" class="slick-next"><svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg></button>`,
-				slidesToScroll: 1,
-				responsive: [
-					{
-					breakpoint: 768,
-					settings: {
-						arrows: true,
-						centerMode: false,
-						adaptiveHeight: true,
-						slidesToShow: 3,
-						slidesToScroll: 1,
-					}
+				navText: [
+					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>`,
+					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>`
+				],
+				responsive: {
+					0: {
+						items: 2,
+						margin: 10
 					},
-					{
-					breakpoint: 480,
-					settings: {
-						arrows: true,
-						centerMode: false,
-						slidesToShow: 2,
-						adaptiveHeight: true,
-						slidesToScroll: 1,
+					480: {
+						items: 2,
+						margin: 15
+					},
+					768: {
+						items: 3,
+						margin: 15
+					},
+					992: {
+						items: 4,
+						margin: 20
 					}
-					}
-				]
+				},
+				onInitialized: function() {
+					// Принудительно обновляем карусель после инициализации
+					setTimeout(function() {
+						$carousel.trigger('refresh.owl.carousel');
+					}, 100);
+				}
 			});
 		});
 	</script>
+
+	<style>
+	/* Стили для карусели разделов */
+	#front-sections-carousel {
+		padding: 0 40px;
+		position: relative;
+	}
+
+	#front-sections-carousel .owl-nav {
+		position: absolute;
+		top: 50%;
+		width: 100%;
+		left: 0;
+		transform: translateY(-50%);
+		display: flex;
+		justify-content: space-between;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	#front-sections-carousel .owl-prev, 
+	#front-sections-carousel .owl-next {
+		width: 40px;
+		height: 40px;
+		background: #fff !important;
+		border-radius: 50% !important;
+		box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+		display: flex !important;
+		align-items: center;
+		justify-content: center;
+		pointer-events: auto;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	#front-sections-carousel .owl-prev {
+		left: -20px;
+	}
+
+	#front-sections-carousel .owl-next {
+		right: -20px;
+	}
+
+	#front-sections-carousel .owl-prev:hover, 
+	#front-sections-carousel .owl-next:hover {
+		background: #f5f5f5 !important;
+	}
+
+	#front-sections-carousel .owl-item {
+		padding: 10px;
+	}
+
+	.item-section {
+		text-align: center;
+	}
+
+	.item-section .item {
+		background: #fff;
+		border-radius: 12px;
+		padding: 15px;
+		transition: all 0.3s ease;
+		height: 100%;
+	}
+
+	.item-section .item:hover {
+		box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+	}
+
+	.item-section .img {
+		margin-bottom: 10px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.item-section .img img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.item-section .name {
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 1.3;
+	}
+
+	/* Удаляем ненужные элементы */
+	.left_gif {
+		display: none;
+	}
+
+	/* Адаптивные стили */
+	@media (max-width: 768px) {
+		.item-section .item {
+			padding: 10px;
+		}
+		
+		.item-section .name {
+			font-size: 13px;
+		}
+	}
+	</style>
 <?endif;?>
 <?endif;?>

@@ -889,3 +889,17 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .catalog_detail .element_detail_text .price_txt .sharing {
     display: none;
 }
+
+.btn.btn-default {
+    background-color: #308582!important;
+}
+
+.articles-list .item .left-data img, .catalog_section_list .section_item .image img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.catalog_section_list .section_item ul {
+    display: flex;
+    flex-direction: column;
+}
