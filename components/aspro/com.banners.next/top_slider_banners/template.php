@@ -344,57 +344,6 @@
 			});
 		});
 	</script>
-	<style>
-		/* Стили для Owl Carousel */
-		.owl-carousel .owl-item img {
-			width: 100%;
-			height: auto;
-			object-fit: cover;
-		}
-
-		.owl-carousel .banner_title,
-		.owl-carousel .banner_text {
-			width: 100%;
-			white-space: normal !important;
-			overflow: visible !important;
-			text-overflow: initial !important;
-		}
-
-		/* Исправления для заголовков и контента */
-		.owl-carousel .banner_title {
-			font-size: 2.5rem;
-			line-height: 1.2;
-			margin-bottom: 10px;
-		}
-
-		.owl-carousel .banner_text {
-			font-size: 1.2rem;
-			line-height: 1.4;
-		}
-
-		/* Для мобильных устройств */
-		@media only screen and (max-width: 767px) {
-			.owl-carousel .banner_title {
-				font-size: 1.8rem;
-			}
-
-			.owl-carousel .banner_text {
-				font-size: 1rem;
-			}
-
-			/* Настройка высоты слайда для мобильных */
-			.owl-carousel .owl-item {
-				height: auto !important;
-			}
-
-			/* Улучшение видимости навигационных элементов */
-			.owl-carousel .owl-nav button {
-				background: rgba(255, 255, 255, 0.7) !important;
-				padding: 5px !important;
-				border-radius: 50%;
-			}
-		}
-	</style>
 	<? if ($bInitYoutubeJSApi): ?>
 		<script type="text/javascript">
 			BX.ready(function() {
