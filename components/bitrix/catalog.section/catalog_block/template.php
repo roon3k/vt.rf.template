@@ -432,7 +432,6 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 												<?=$arAddToBasketData["HTML"]?>
 											<!--/noindex-->
 										</div>
-									</div>
 								<?endif;?>
 									<?if($arItem["OFFERS"]){?>
 										<?if(!empty($arItem['OFFERS_PROP'])){?>
