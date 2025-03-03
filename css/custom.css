@@ -1237,3 +1237,11 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     }
   
 }
+
+.btn {
+    color: #ffffff!important;
+}
+.left_block .subscribe-form input.send_btn {
+    background: #2c7e7b url(/bitrix/templates/aspro_next/images/svg/ai.svg) -23px -39px no-repeat!important; 
+    opacity: 1!important;
+}
