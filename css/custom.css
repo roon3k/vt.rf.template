@@ -1204,6 +1204,12 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     font-size: 18px;
     font-weight: 700;
 }
+.card_flex .counter_wrapp .button_block a {
+     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
 
 .info_item .middle_info .prices .discount * {
     text-decoration: line-through;
