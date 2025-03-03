@@ -427,6 +427,12 @@ $isBigdata = $arParams['USE_BIG_DATA'] === "Y";?>
 											</div>
 										<?endif;?>
 									</div>
+									<div id="<?=$arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']; ?>" class="button_block <?=(($arAddToBasketData["ACTION"] == "ORDER"/*&& !$arItem["CAN_BUY"]*/)  || !$arAddToBasketData["CAN_BUY"] || !$arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] || $arAddToBasketData["ACTION"] == "SUBSCRIBE" ? "wide" : "");?>">
+											<!--noindex-->
+												<?=$arAddToBasketData["HTML"]?>
+											<!--/noindex-->
+										</div>
+									</div>
 								<?endif;?>
 									<?if($arItem["OFFERS"]){?>
 										<?if(!empty($arItem['OFFERS_PROP'])){?>
