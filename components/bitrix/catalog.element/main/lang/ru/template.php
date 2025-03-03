@@ -1,12 +1,12 @@
 <?
-$MESS["CATALOG_ADD_TO_BASKET"] = "В корзину";
+$MESS["CATALOG_ADD_TO_BASKET"] = "Купить";
 $MESS["CATALOG_ADDED_TO_BASKET"] = "В корзине";
 $MESS["CATALOG_IZB"] = "В избранное";
-$MESS["CATALOG_ADD_TO_BASKET_IN"] = "В корзину";
+$MESS["CATALOG_ADD_TO_BASKET_IN"] = "Купить";
 $MESS["CATALOG_MORE_PHOTO"] = "Еще фото";
 $MESS["CATALOG_DOWNLOAD"] = "Скачать";
 $MESS["CATALOG_BACK"] = "Назад в раздел";
-$MESS["CATALOG_BUY"] = "В корзину";
+$MESS["CATALOG_BUY"] = "Купить";
 $MESS["ARTICLE"] = "Артикул:";
 $MESS["CATALOG_NOT_AVAILABLE"] = "Нет в наличии";
 $MESS["CATALOG_ORDER_NAME"] = "Оповестить о наличии";
@@ -22,7 +22,7 @@ $MESS["CATALOG_NO_VAT"] = "не облагается";
 $MESS["CATALOG_VAT_INCLUDED"] = "НДС включен в цену";
 $MESS["CATALOG_VAT_NOT_INCLUDED"] = "НДС не включен в цену";
 $MESS["CT_BCE_QUANTITY"] = "Количество";
-$MESS["CT_BCE_CATALOG_ADD"] = "В корзину";
+$MESS["CT_BCE_CATALOG_ADD"] = "Купить";
 $MESS["CT_BCE_CATALOG_COMPARE"] = "Сравнить";
 $MESS["CT_BCE_CATALOG_COMPARE_ADDED"] = "В сравнении";
 $MESS["CT_BCE_CATALOG_IZB"] = "Отложить";

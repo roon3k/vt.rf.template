@@ -3,10 +3,10 @@ global $arTheme, $arRegion;
 $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 ?>
 <div class="mobileheader-v1">
-	<div class="burger pull-left">
-		<?=CNext::showIconSvg("burger dark", SITE_TEMPLATE_PATH."/images/svg/Burger_big_white.svg");?>
-		<?=CNext::showIconSvg("close dark", SITE_TEMPLATE_PATH."/images/svg/Close.svg");?>
-	</div>
+<!-- <div class="burger pull-left">
+		<--!?=CNext::showIconSvg("burger dark", SITE_TEMPLATE_PATH."/images/svg/Burger_big_white.svg");?>
+		<--!?=CNext::showIconSvg("close dark", SITE_TEMPLATE_PATH."/images/svg/Close.svg");?>
+	</div> -->
 	<div class="logo-block pull-left header_mobile_logo">
 		<div class="logo<?=$logoClass?>">
 			<?=CNext::ShowLogo();?>

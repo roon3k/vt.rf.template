@@ -1,6 +1,7 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
-
+require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
+global $USER;
 /**
  * Функция для получения цены товара
  * 
@@ -8,9 +9,14 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
  * @return array Массив с информацией о цене
  */
 function getProductPrice($productId) {
+    global $USER; 
     // Получаем базовую цену товара с помощью CPrice::GetBasePrice
     $basePrice = CPrice::GetBasePrice($productId);
-    
+    // $discountPrice = CCatalogDiscount::GetDiscountByProduct($productId,$USER->GetUserGroupArray(),
+	// "N",
+	// 2,
+	// SITE_ID);
+    // return $discountPrice;
     if (!empty($basePrice)) {
         return [
             'PRICE' => $basePrice["PRICE"],

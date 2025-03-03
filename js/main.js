@@ -4008,26 +4008,28 @@ $(document).ready(function () {
           $mobileMenu.find(".expanded").removeClass("expanded");
         }
       });
+      /**
+       * Swipe menu main.js
+       */
+      // $(document).on('swiperight', function(e) {
+      //   if (
+      //     !$(e.target).closest(".flexslider").length &&
+      //     !$(e.target).closest(".swipeignore").length &&
+      //     !$(e.target).closest("ymaps").length
+      //   ) {
+      //     OpenMobileMenu();
+      //   }
+      // });
 
-      $(document).on('swiperight', function(e) {
-        if (
-          !$(e.target).closest(".flexslider").length &&
-          !$(e.target).closest(".swipeignore").length &&
-          !$(e.target).closest("ymaps").length
-        ) {
-          OpenMobileMenu();
-        }
-      });
-
-      $(document).on('swipeleft', function (e) {
-        if (
-          !$(e.target).closest(".flexslider").length &&
-          !$(e.target).closest(".swipeignore").length &&
-          !$(e.target).closest("ymaps").length
-        ) {
-          CloseMobileMenu();
-        }
-      });
+      // $(document).on('swipeleft', function (e) {
+      //   if (
+      //     !$(e.target).closest(".flexslider").length &&
+      //     !$(e.target).closest(".swipeignore").length &&
+      //     !$(e.target).closest("ymaps").length
+      //   ) {
+      //     CloseMobileMenu();
+      //   }
+      // });
     } else {
       $(document).on("click", "#mobileheader", function (e) {
         if (
