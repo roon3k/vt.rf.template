@@ -2,8 +2,6 @@
 <? $this->setFrameMode(true); ?>
 <? $bCompactViewMobile = $arParams['COMPACT_VIEW_MOBILE'] === 'Y'; ?>
 <?php
-global $USER;
-if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
 ?>
 <?
 $rsParentSection = CIBlockSection::GetByID($arResult['SECTION']['ID']);
@@ -22,42 +20,48 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 <? if ($arResult['SECTIONS']): ?>
 	<div class="new_section_tab_block <?= ($bCompactViewMobile ? 'compact-view-mobile' : '') ?>">
 		<div class="list items">
-			<div id="section-carousel" class="owl-carousel">
-				<?php
-				// Перемещаем элемент с ID, равным $arResult['SECTION']['ID'], на первое место
-				foreach ($arResult['SECTIONS'] as $key => $arSection) {
-					if ($arSection['ID'] == $arParams['SECTION_VER']) {
-						// Удаляем элемент с массива
-						$selectedSection = $arResult['SECTIONS'][$key];
-						unset($arResult['SECTIONS'][$key]);
-				
-						// Вставляем элемент в начало массива
-						$arResult['SECTIONS'] = array($key => $selectedSection) + $arResult['SECTIONS'];
-						break;
+			<div id="section-carousel-wrapper">
+				<div id="section-carousel-loader" class="section-loader">
+					<div class="spinner"></div>
+					<div class="loading-text">Загрузка изображений...</div>
+				</div>
+				<div id="section-carousel" class="owl-carousel" style="opacity: 0; transition: opacity 0.3s;">
+					<?php
+					// Перемещаем элемент с ID, равным $arResult['SECTION']['ID'], на первое место
+					foreach ($arResult['SECTIONS'] as $key => $arSection) {
+						if ($arSection['ID'] == $arParams['SECTION_VER']) {
+							// Удаляем элемент с массива
+							$selectedSection = $arResult['SECTIONS'][$key];
+							unset($arResult['SECTIONS'][$key]);
+					
+							// Вставляем элемент в начало массива
+							$arResult['SECTIONS'] = array($key => $selectedSection) + $arResult['SECTIONS'];
+							break;
+						}
 					}
-				}
-				// Теперь выводим секции
-				foreach (array_reverse($arResult['SECTIONS']) as $arSection): ?>
-				
-					<div class="item-section" data-sect="<?= $arSection['ID'] ?>">
-						<div class="item <?= ($arSection['ID'] == $arParams['SECTION_VER'] ? 'active' : '') ?>" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
-							<div class="img shine">
-								<?php if ($arSection["PICTURE"]): ?>
-									<?php $img = CFile::ResizeImageGet($arSection["PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
-									<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
-								<?php elseif ($arSection["~PICTURE"]): ?>
-									<?php $img = CFile::ResizeImageGet($arSection["~PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
-									<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
-								<?php else: ?>
-									<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= SITE_TEMPLATE_PATH ?>/images/svg/catalog_category_noimage.svg" alt="<?= $arSection["NAME"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
-								<?php endif; ?>
-							</div>
-							<div class="name">
-								<a href="<?= $arSection['SECTION_PAGE_URL']; ?>" class="dark_link"><?= $arSection['NAME']; ?></a>
+					// Теперь выводим секции
+					foreach (array_reverse($arResult['SECTIONS']) as $arSection): ?>
+					
+						<div class="item-section" data-sect="<?= $arSection['ID'] ?>">
+							<div class="item <?= ($arSection['ID'] == $arParams['SECTION_VER'] ? 'active' : '') ?>" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
+								<div class="img shine">
+									<?php if ($arSection["PICTURE"]): ?>
+										<?php $img = CFile::ResizeImageGet($arSection["PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
+										<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
+									<?php elseif ($arSection["~PICTURE"]): ?>
+										<?php $img = CFile::ResizeImageGet($arSection["~PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
+										<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
+									<?php else: ?>
+										<a href="<?= $arSection["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= SITE_TEMPLATE_PATH ?>/images/svg/catalog_category_noimage.svg" alt="<?= $arSection["NAME"] ?>" title="<?= $arSection["NAME"] ?>" /></a>
+									<?php endif; ?>
+								</div>
+								<div class="name">
+									<a href="<?= $arSection['SECTION_PAGE_URL']; ?>" class="dark_link"><?= $arSection['NAME']; ?></a>
+								</div>
 							</div>
 						</div>
-					</div>
-				<?php endforeach; ?>
+					<?php endforeach; ?>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -65,89 +69,169 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 	<script>
 		$(document).ready(function() {
 			var $carousel = $('#section-carousel');
-			
-			// Предзагрузка изображений перед инициализацией карусели
-			var images = [];
-			$('#section-carousel img').each(function() {
-				var imgSrc = $(this).attr('src');
-				if (imgSrc) {
-					var img = new Image();
-					img.src = imgSrc;
-					images.push(img);
-				}
-			});
+			var $loader = $('#section-carousel-loader');
 			
 			// Находим активный элемент и его индекс
 			var activeItem = $('.item-section[data-sect="<?= $arParams['SECTION_VER'] ?>"]');
 			var activeIndex = activeItem.length ? activeItem.index() : 0;
 			
-			// Инициализируем карусель
-			$carousel.owlCarousel({
-				items: 4,
-				loop: true,
-				margin: 20,
-				nav: true,
-				dots: false,
-				center: true,
-				startPosition: activeIndex, // Устанавливаем начальную позицию
-				navText: [
-					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>`,
-					`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>`
-				],
-				responsive: {
-					0: {
-						items: 2,
-						margin: 10,
-						center: true
-					},
-					480: {
-						items: 2,
-						margin: 15,
-						center: true
-					},
-					768: {
-						items: 3,
-						margin: 15,
-						center: true
-					},
-					992: {
-						items: 4,
-						margin: 20,
-						center: true
+			// Функция для предзагрузки всех изображений
+			function preloadAllImages() {
+				return new Promise(function(resolve) {
+					var images = [];
+					var loadedCount = 0;
+					var totalImages = $('#section-carousel img').length;
+					
+					// Если нет изображений, сразу возвращаем результат
+					if (totalImages === 0) {
+						resolve();
+						return;
 					}
-				},
-				onInitialized: function() {
-					// Обновляем карусель без пересборки
+					
+					$('#section-carousel img').each(function() {
+						var imgSrc = $(this).attr('src');
+						if (imgSrc) {
+							var img = new Image();
+							
+							img.onload = function() {
+								loadedCount++;
+								if (loadedCount === totalImages) {
+									resolve();
+								}
+							};
+							
+							img.onerror = function() {
+								loadedCount++;
+								if (loadedCount === totalImages) {
+									resolve();
+								}
+							};
+							
+							img.src = imgSrc;
+							images.push(img);
+						} else {
+							loadedCount++;
+							if (loadedCount === totalImages) {
+								resolve();
+							}
+						}
+					});
+					
+					// Страховка: если по какой-то причине не все изображения загрузились за 3 секунды
 					setTimeout(function() {
-						$carousel.trigger('refresh.owl.carousel');
-					}, 100);
-				}
-			});
+						resolve();
+					}, 3000);
+				});
+			}
 			
-			// Добавляем обработчик клика на элементы
-			$('.item-section').on('click', function(e) {
-				// Если клик был не по ссылке, а по самому элементу
-				if (!$(e.target).is('a')) {
-					e.preventDefault();
-					var index = $(this).index();
-					
-					// Плавно прокручиваем к выбранному элементу
-					$carousel.trigger('to.owl.carousel', [index, 300]);
-					
-					// Добавляем класс active выбранному элементу и убираем у остальных
-					$('.item-section .item').removeClass('active');
-					$(this).find('.item').addClass('active');
-					
-					// Если нужно, можно также обновить URL страницы
-					// var sectionUrl = $(this).find('a').attr('href');
-					// history.pushState(null, null, sectionUrl);
-				}
+			// Загружаем все изображения перед инициализацией карусели
+			preloadAllImages().then(function() {
+				// Скрываем лоадер
+				$loader.fadeOut(300);
+				
+				// Инициализируем карусель
+				$carousel.owlCarousel({
+					items: 4,
+					loop: true,
+					margin: 20,
+					nav: true,
+					dots: false,
+					center: true,
+					startPosition: activeIndex,
+					lazyLoad: false,
+					smartSpeed: 300,
+					navText: [
+						`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>`,
+						`<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>`
+					],
+					responsive: {
+						0: {
+							items: 2,
+							margin: 10,
+							center: true
+						},
+						480: {
+							items: 2,
+							margin: 15,
+							center: true
+						},
+						768: {
+							items: 3,
+							margin: 15,
+							center: true
+						},
+						992: {
+							items: 4,
+							margin: 20,
+							center: true
+						}
+					},
+					onInitialized: function() {
+						// Показываем карусель после инициализации
+						$carousel.css('opacity', '1');
+					}
+				});
+				
+				// Добавляем обработчик клика на элементы
+				$('.item-section').on('click', function(e) {
+					// Если клик был не по ссылке, а по самому элементу
+					if (!$(e.target).is('a')) {
+						e.preventDefault();
+						var index = $(this).index();
+						
+						// Плавно прокручиваем к выбранному элементу
+						$carousel.trigger('to.owl.carousel', [index, 300]);
+						
+						// Добавляем класс active выбранному элементу и убираем у остальных
+						$('.item-section .item').removeClass('active');
+						$(this).find('.item').addClass('active');
+					}
+				});
 			});
 		});
 	</script>
 	
 	<style>
 	/* Стили для карусели разделов */
+	#section-carousel-wrapper {
+		position: relative;
+		min-height: 150px;
+	}
+	
+	.section-loader {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.9);
+		z-index: 2;
+	}
+	
+	.section-loader .spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #f3f3f3;
+		border-top: 4px solid #4086F1;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-bottom: 10px;
+	}
+	
+	.section-loader .loading-text {
+		font-size: 14px;
+		color: #333;
+	}
+	
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+	
 	#section-carousel {
 		padding: 0 40px;
 		position: relative;
@@ -252,5 +336,4 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 		}
 	}
 	</style>
-<? endif; ?>
 <? endif; ?>

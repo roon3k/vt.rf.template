@@ -1249,3 +1249,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .btn.btn-default.white.white-bg:hover, .btn-default.white.white-bg:active, .btn-default.white.white-bg:focus {
     color: #ffffff!important;
 }
+
+.email_input {
+    border-radius: 15px;
+}
