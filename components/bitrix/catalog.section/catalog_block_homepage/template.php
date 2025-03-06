@@ -504,4 +504,47 @@ require_once(__DIR__ . '/price_helper.php');
 .image_wrapper_block, .image_wrapper_block a {
 	height: 170px !important;
 }
+
+/* Добавляем стили для фиксированной высоты названия товара */
+.catalog_item .item-title {
+    height: 40px !important; /* Фиксированная высота для названия */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Ограничиваем двумя строками */
+    -webkit-box-orient: vertical;
+    margin-bottom: 10px !important; /* Одинаковый отступ после названия */
+}
+
+/* Стили для фиксированной высоты карточки в целом */
+.catalog_item_wrapp {
+    height: auto;
+    display: flex;
+}
+
+.catalog_item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+/* Растягиваем блок цены к нижнему краю карточки */
+.catalog_item .cost.prices {
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .catalog_item .item-title {
+        height: 36px !important; /* Меньшая высота для мобильных */
+        -webkit-line-clamp: 2;
+    }
+}
+
+@media (max-width: 576px) {
+    .catalog_item .item-title {
+        font-size: 13px;
+    }
+}
 </style>

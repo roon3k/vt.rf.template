@@ -1245,3 +1245,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     background: #2c7e7b url(/bitrix/templates/aspro_next/images/svg/ai.svg) -23px -39px no-repeat!important; 
     opacity: 1!important;
 }
+
+.btn.btn-default.white.white-bg:hover, .btn-default.white.white-bg:active, .btn-default.white.white-bg:focus {
+    color: #ffffff!important;
+}
