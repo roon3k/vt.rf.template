@@ -1253,3 +1253,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .email_input {
     border-radius: 15px;
 }
+
+.card_flex .counter_wrapp .button_block a {
+    height: 55px;
+}

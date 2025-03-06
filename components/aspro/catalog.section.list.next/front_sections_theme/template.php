@@ -1,7 +1,5 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
 <?php
-global $USER;
-if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
 ?>
 <? $this->setFrameMode(true); ?>
 <? $bCompactViewMobile = $arParams['COMPACT_VIEW_MOBILE'] === 'Y'; ?>
@@ -208,4 +206,3 @@ if ($USER->IsAuthorized() && $USER->GetLogin() == 'master'):
 		});
 	</script>
 <? endif; ?>
-<?php endif; ?>
