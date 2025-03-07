@@ -1395,3 +1395,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .sale-personal-section-index-block, .personal_wrapper .orders_wrapper .row.col-md-12.col-sm-12 {
     border-radius: 15px;
 }
+
+.auth_wrapp .form-footer .register {
+    color: #308582 !important;
+}
