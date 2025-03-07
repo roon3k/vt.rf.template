@@ -1,12 +1,38 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 <? $this->setFrameMode( true ); ?>
 <?if($arResult["SECTIONS"]){?>
-<div class="catalog_section_list row items flexbox">
-	<?foreach( $arResult["SECTIONS"] as $arItems ){
+<style>
+    /* Базовые стили для секций */
+    .section_item {
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border-radius: 0; /* Явно сбрасываем border-radius для всех элементов */
+    }
+    
+    /* Стили только для конкретных угловых элементов - применятся через JS */
+    .section_item.top-left-corner {
+        border-top-left-radius: 15px !important;
+    }
+    
+    .section_item.top-right-corner {
+        border-top-right-radius: 15px !important;
+    }
+    
+    .section_item.bottom-left-corner {
+        border-bottom-left-radius: 15px !important;
+    }
+    
+    .section_item.bottom-right-corner {
+        border-bottom-right-radius: 15px !important;
+    }
+</style>
+
+<div class="catalog_section_list row items flexbox" id="section-list-container">
+	<?foreach( $arResult["SECTIONS"] as $key => $arItems ){
 		$this->AddEditAction($arItems['ID'], $arItems['EDIT_LINK'], CIBlock::GetArrayByID($arItems["IBLOCK_ID"], "SECTION_EDIT"));
 		$this->AddDeleteAction($arItems['ID'], $arItems['DELETE_LINK'], CIBlock::GetArrayByID($arItems["IBLOCK_ID"], "SECTION_DELETE"), array("CONFIRM" => GetMessage('CT_BNL_SECTION_DELETE_CONFIRM')));
 	?>
-		<div class="item_block col-lg-4 col-md-6 col-sm-6">
+		<div class="item_block col-lg-4 col-md-6 col-sm-6" data-index="<?=$key?>">
 			<div class="section_item item" id="<?=$this->GetEditAreaId($arItems['ID']);?>">
 				<table class="section_item_inner mobile_url">
 					<tr data-url="<?=$arItems["SECTION_PAGE_URL"]?>">
@@ -53,20 +79,64 @@
 
 <script>
 	$(document).ready(function() {
+		// Обработчик для мобильных устройств
 		function isMobile() {
-				return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-			}
+			return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+		}
 
-			// Обработчик клика для мобильных устройств
-			if (isMobile()) {
-				$('.mobile_url tr').on('click', function(e) {
-					e.preventDefault();
-					var url = $(this).data('url');
-					if (url) {
-						window.location.href = url;
-					}
-				});
-			}
-	})
+		if (isMobile()) {
+			$('.mobile_url tr').on('click', function(e) {
+				e.preventDefault();
+				var url = $(this).data('url');
+				if (url) {
+					window.location.href = url;
+				}
+			});
+		}
+        
+        // Функция для применения скруглений к угловым элементам
+        function applyCornerRadius() {
+            var $container = $('#section-list-container');
+            var $items = $container.find('.item_block');
+            var totalItems = $items.length;
+            
+            // Сначала удаляем все классы скругления
+            $container.find('.section_item').removeClass('top-left-corner top-right-corner bottom-left-corner bottom-right-corner');
+            
+            if (totalItems === 0) return;
+            
+            // Определяем количество элементов в строке в зависимости от размера экрана
+            var itemsPerRow = (window.innerWidth >= 992) ? 3 : 2;
+            
+            // Вычисляем количество строк
+            var totalRows = Math.ceil(totalItems / itemsPerRow);
+            
+            // Верхний левый угол (всегда первый элемент)
+            $items.eq(0).find('.section_item').addClass('top-left-corner');
+            
+            // Верхний правый угол 
+            // (itemsPerRow-й элемент или последний в первой строке, если элементов меньше)
+            var topRightIndex = Math.min(itemsPerRow - 1, totalItems - 1);
+            $items.eq(topRightIndex).find('.section_item').addClass('top-right-corner');
+            
+            // Нижний левый угол (первый элемент в последней строке)
+            var bottomLeftIndex = (totalRows - 1) * itemsPerRow;
+            // Проверяем, что индекс не выходит за пределы
+            if (bottomLeftIndex < totalItems) {
+                $items.eq(bottomLeftIndex).find('.section_item').addClass('bottom-left-corner');
+            }
+            
+            // Нижний правый угол (последний элемент)
+            $items.eq(totalItems - 1).find('.section_item').addClass('bottom-right-corner');
+        }
+        
+        // Применяем скругления при загрузке
+        applyCornerRadius();
+        
+        // И при изменении размера окна
+        $(window).on('resize', function() {
+            applyCornerRadius();
+        });
+	});
 </script>
 <?}?>

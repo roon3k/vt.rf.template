@@ -1390,3 +1390,8 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     max-width: 100%;
     height: auto;
 }
+
+
+.sale-personal-section-index-block, .personal_wrapper .orders_wrapper .row.col-md-12.col-sm-12 {
+    border-radius: 15px;
+}
