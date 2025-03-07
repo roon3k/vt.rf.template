@@ -562,9 +562,6 @@ if ($blockViewType) {
 										<?if($bShowDetailText):?>
 											<?$APPLICATION->ShowViewContent('PRODUCT_DETAIL_TEXT_INFO')?>
 										<?endif;?>
-
-										
-
 										<?if($bShowDocs):?>
 											<?$APPLICATION->ShowViewContent('PRODUCT_FILES_INFO')?>
 										<?endif;?>
