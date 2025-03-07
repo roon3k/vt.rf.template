@@ -208,6 +208,29 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				display: none;
 			}
 			
+			/* Стили для лоадера товаров */
+			.products-loader {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(255, 255, 255, 0.7);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				z-index: 100;
+			}
+			
+			.products-loader .spinner {
+				width: 50px;
+				height: 50px;
+				border: 5px solid #f3f3f3;
+				border-top: 5px solid #4086F1;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+			}
+			
 			/* Адаптивные стили */
 			@media (max-width: 767px) {
 				.custom-slider {
@@ -238,12 +261,54 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				</div>
 				<div class="custom-slider" id="main-sections-carousel">
 					<?php
-					// Удаляем манипуляции с порядком элементов
-					// Просто выводим элементы в обычном порядке
-					foreach ($arResult['SECTIONS'] as $arSection): ?>
+					// Возвращаем исходную логику с array_reverse, но меняем обработку активного элемента
+					// Перемещаем элемент с ID, равным $arParams['SECTION_VER'], на первое место
+					$activeKey = null;
+					foreach ($arResult['SECTIONS'] as $key => $arSection) {
+						if ($arSection['ID'] == $arParams['SECTION_VER']) {
+							$activeKey = $key;
+							break;
+						}
+					}
 					
-						<div class="custom-slider-item item-section" data-sect="<?= $arSection['ID'] ?>">
-							<div class="item <?= ($arSection['ID'] == $arParams['SECTION_VER'] ? 'active' : '') ?>" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
+					// Сохраняем активный элемент в отдельной переменной
+					$activeSectionData = null;
+					if ($activeKey !== null) {
+						$activeSectionData = $arResult['SECTIONS'][$activeKey];
+					}
+					
+					// Теперь выводим секции, применяя array_reverse и особую обработку для активного элемента
+					$reversedSections = array_reverse($arResult['SECTIONS']);
+					
+					// Если нашли активную секцию, выводим её отдельно первой
+					if ($activeSectionData): ?>
+						<div class="custom-slider-item item-section" data-sect="<?= $activeSectionData['ID'] ?>" data-level="<?= $activeSectionData['DEPTH_LEVEL'] ?? '1' ?>">
+							<div class="item active" id="<?= $this->GetEditAreaId($activeSectionData['ID']); ?>">
+								<div class="img shine">
+									<?php if ($activeSectionData["PICTURE"]): ?>
+										<?php $img = CFile::ResizeImageGet($activeSectionData["PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
+										<a href="<?= $activeSectionData["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $activeSectionData["NAME"] ?>" /></a>
+									<?php elseif ($activeSectionData["~PICTURE"]): ?>
+										<?php $img = CFile::ResizeImageGet($activeSectionData["~PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
+										<a href="<?= $activeSectionData["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= $img["src"] ?>" title="<?= $activeSectionData["NAME"] ?>" /></a>
+									<?php else: ?>
+										<a href="<?= $activeSectionData["SECTION_PAGE_URL"] ?>" class="thumb"><img src="<?= SITE_TEMPLATE_PATH ?>/images/svg/catalog_category_noimage.svg" alt="<?= $activeSectionData["NAME"] ?>" title="<?= $activeSectionData["NAME"] ?>" /></a>
+									<?php endif; ?>
+								</div>
+								<div class="name">
+									<a href="<?= $activeSectionData['SECTION_PAGE_URL']; ?>" class="dark_link"><?= $activeSectionData['NAME']; ?></a>
+								</div>
+							</div>
+						</div>
+					<?php endif;
+					
+					// Затем выводим все остальные секции
+					foreach ($reversedSections as $arSection):
+						// Пропускаем активную секцию, т.к. она уже выведена выше
+						if ($activeSectionData && $arSection['ID'] == $activeSectionData['ID']) continue; 
+					?>
+						<div class="custom-slider-item item-section" data-sect="<?= $arSection['ID'] ?>" data-level="<?= $arSection['DEPTH_LEVEL'] ?? '1' ?>">
+							<div class="item" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
 								<div class="img shine">
 									<?php if ($arSection["PICTURE"]): ?>
 										<?php $img = CFile::ResizeImageGet($arSection["PICTURE"], array("width" => 120, "height" => 120), BX_RESIZE_IMAGE_EXACT, true); ?>
@@ -329,24 +394,46 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				});
 			}
 			
+			// Функция для загрузки товаров по AJAX через нативное API Битрикс
+			function loadProducts(sectionId, sectionLevel) {
+				// Находим контейнер с товарами
+				const productsContainer = document.querySelector('.catalog_block.items.block_list.grid-list');
+				
+				if (!productsContainer) {
+					console.error('Контейнер для товаров не найден на странице');
+					return;
+				}
+				
+				// Создаем и показываем индикатор загрузки
+				const loader = document.createElement('div');
+				loader.className = 'products-loader';
+				loader.innerHTML = '<div class="spinner"></div>';
+				productsContainer.parentNode.style.position = 'relative';
+				productsContainer.parentNode.appendChild(loader);
+				
+				// Используем bitrix компонент для обновления
+				BX.ajax.insertToNode('/ajax/load_products.php?SECTION_ID=' + sectionId + '&SECTION_LEVEL=' + sectionLevel + '&ajax=N', productsContainer.parentNode);
+				
+				// Установим таймер для удаления лоадера после загрузки (через 2 секунды)
+				setTimeout(function() {
+					if (loader && loader.parentNode) {
+						loader.parentNode.removeChild(loader);
+					}
+				}, 2000);
+			}
+			
 			// Предзагрузка изображений перед инициализацией слайдера
 			preloadAllImages().then(function() {
 				// Скрываем лоадер
-				loader.style.display = 'none';
+				if (loader) {
+					loader.style.display = 'none';
+				}
 				
 				// Инициализация слайдера
 				const slider = document.querySelector('.custom-slider');
 				const sliderItems = document.querySelectorAll('.custom-slider-item');
 				const prevBtn = document.querySelector('.custom-slider-prev');
 				const nextBtn = document.querySelector('.custom-slider-next');
-				
-				// Находим активный элемент и его индекс
-				let activeItemIndex = 0;
-				sliderItems.forEach((item, index) => {
-					if (item.querySelector('.item.active')) {
-						activeItemIndex = index;
-					}
-				});
 				
 				let currentPosition = 0;
 				let itemsPerView = 4;
@@ -376,11 +463,33 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						item.style.width = `${itemWidth}px`;
 					});
 					
+					// Проверяем текущую позицию и корректируем при необходимости
+					adjustPosition();
+					
 					// Обновляем видимость кнопок навигации
 					updateNavButtons();
 					
-					// Сразу показываем слайдер
-					slider.style.opacity = '1';
+					// Проверка активного элемента - он всегда должен быть виден
+					const activeItem = document.querySelector('.item-section .item.active');
+					if (activeItem) {
+						const activeSection = activeItem.closest('.item-section');
+						if (activeSection) {
+							// Обновляем текущую позицию, если активный элемент не виден
+							const activeIndex = Array.from(sliderItems).indexOf(activeSection);
+							
+							// Если активный элемент находится за пределами видимой области
+							if (activeIndex >= 0 && (activeIndex < currentPosition || activeIndex >= currentPosition + itemsPerView)) {
+								// Устанавливаем позицию так, чтобы активный элемент был виден
+								currentPosition = Math.min(Math.max(0, activeIndex), Math.max(0, totalItems - itemsPerView));
+								
+								// Применяем трансформацию
+								slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+								
+								// Обновляем кнопки навигации после изменения позиции
+								updateNavButtons();
+							}
+						}
+					}
 				}
 				
 				function adjustPosition() {
@@ -475,62 +584,61 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 					const sliderItem = item.querySelector('.item');
 					
 					item.addEventListener('click', function(e) {
-						// Если клик был не по ссылке, а по самому элементу
-						if (!e.target.closest('a')) {
+						// Получаем ссылку внутри элемента
+						const link = e.target.closest('a');
+						
+						// Если клик был по ссылке, предотвращаем переход
+						if (link) {
 							e.preventDefault();
-							
-							// Убираем активный класс со всех элементов
-							sliderItems.forEach(el => {
-								el.querySelector('.item').classList.remove('active');
-							});
-							
-							// Добавляем активный класс текущему элементу
-							sliderItem.classList.add('active');
-							
-							// Делаем элемент видимым, но не перемещаем его в центр принудительно
-							// Проверяем, находится ли элемент в текущей видимой области
-							if (index < currentPosition) {
-								// Если элемент находится левее видимой области
-								currentPosition = index;
-							} else if (index >= currentPosition + itemsPerView) {
-								// Если элемент находится правее видимой области
-								currentPosition = index - itemsPerView + 1;
-							}
-							// В остальных случаях не меняем позицию - элемент уже виден
-							
-							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-							
-							// Обновляем состояние кнопок
-							updateNavButtons();
 						}
+						
+						// Убираем активный класс со всех элементов
+						sliderItems.forEach(el => {
+							el.querySelector('.item').classList.remove('active');
+						});
+						
+						// Добавляем активный класс текущему элементу
+						sliderItem.classList.add('active');
+						
+						// Загружаем товары для выбранного раздела через AJAX
+						const sectionId = item.getAttribute('data-sect');
+						const sectionLevel = parseInt(item.getAttribute('data-level') || "1");
+						
+						if (sectionId) {
+							loadProducts(sectionId, sectionLevel);
+						}
+						
+						// Если элемент находится вне видимой области, делаем его видимым
+						if (index < currentPosition) {
+							// Если элемент находится левее видимой области
+							currentPosition = index;
+						} else if (index >= currentPosition + itemsPerView) {
+							// Если элемент находится правее видимой области
+							currentPosition = index - itemsPerView + 1;
+						}
+						
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+						
+						// Обновляем состояние кнопок
+						updateNavButtons();
 					});
 				});
 				
 				// Инициализация слайдера и обработка изменений размера окна
 				updateSizes();
-				
-				// После инициализации и установки размеров, делаем активный элемент видимым если он есть
-				if (activeItemIndex > 0) {
-					// Проверяем, находится ли активный элемент в видимой области по умолчанию
-					if (activeItemIndex < itemsPerView) {
-						// Если активный элемент в пределах первых видимых элементов,
-						// оставляем слайдер в начальной позиции (0)
-						currentPosition = 0;
-					} else {
-						// Если активный элемент находится дальше, делаем его видимым,
-						// но не обязательно в центре
-						currentPosition = activeItemIndex - Math.min(1, itemsPerView - 1);
-					}
-					
-					// Корректируем конечную позицию, чтобы не выходить за пределы
-					const maxPosition = Math.max(0, totalItems - itemsPerView);
-					currentPosition = Math.min(currentPosition, maxPosition);
-					
-					// Применяем позицию
-					adjustPosition();
-				}
-				
 				window.addEventListener('resize', updateSizes);
+				
+				// Обработка навигации по истории браузера (кнопки Назад/Вперед)
+				window.addEventListener('popstate', function(event) {
+					if (event.state && event.state.sectionId) {
+						// Находим элемент слайдера по ID секции
+						const sectionItem = document.querySelector(`.item-section[data-sect="${event.state.sectionId}"]`);
+						if (sectionItem) {
+							// Программно запускаем клик по этому элементу
+							sectionItem.click();
+						}
+					}
+				});
 				
 				// Поддержка свайпов для мобильных устройств
 				let touchStartX = 0;
@@ -561,6 +669,43 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						const maxPosition = Math.max(0, totalItems - itemsPerView);
 						if (currentPosition < maxPosition) {
 							nextSlide();
+						}
+					}
+				}
+				
+				// Показываем слайдер после инициализации
+				slider.style.opacity = '1';
+				
+				// Если есть активный элемент, загружаем его товары и обеспечиваем его видимость
+				const activeSection = document.querySelector('.item-section .item.active');
+				if (activeSection) {
+					const parentItemSection = activeSection.closest('.item-section');
+					if (parentItemSection) {
+						const sectionId = parentItemSection.getAttribute('data-sect');
+						const sectionLevel = parseInt(parentItemSection.getAttribute('data-level') || "1");
+						
+						// Находим индекс активного элемента для корректного позиционирования
+						const allItems = Array.from(sliderItems);
+						const activeIndex = allItems.indexOf(parentItemSection);
+						
+						// Устанавливаем позицию слайдера так, чтобы активный элемент был виден
+						// Предпочтительно показываем его первым в видимой области
+						if (activeIndex >= 0) {
+							currentPosition = activeIndex;
+							// Ограничиваем максимальной позицией
+							const maxPosition = Math.max(0, totalItems - itemsPerView);
+							currentPosition = Math.min(currentPosition, maxPosition);
+							
+							// Применяем трансформацию
+							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+							
+							// Обновляем состояние кнопок навигации
+							updateNavButtons();
+						}
+						
+						if (sectionId) {
+							// Загружаем товары для активного раздела при первой загрузке
+							loadProducts(sectionId, sectionLevel);
 						}
 					}
 				}
