@@ -459,14 +459,7 @@ if ($blockViewType) {
 									<?endif;?>
 								<?endif;?>
 
-								<?//show char block?>
-								<?if($value == "char"):?>
-									<?if($bShowPropsTab && $arParams["PROPERTIES_DISPLAY_LOCATION"] == "TAB"):?>
-										<li class="<?=(!($iTab++) ? ' active' : '')?>">
-											<a href="#props" data-toggle="tab"><span><?=($arParams["TAB_CHAR_NAME"] ? $arParams["TAB_CHAR_NAME"] : GetMessage("PROPERTIES_TAB"));?></span></a>
-										</li>
-									<?endif;?>
-								<?endif;?>
+								
 
 								<?//show reviews block?>
 								<?if($value == "reviews"):?>
@@ -570,14 +563,7 @@ if ($blockViewType) {
 											<?$APPLICATION->ShowViewContent('PRODUCT_DETAIL_TEXT_INFO')?>
 										<?endif;?>
 
-										<?if($arParams["PROPERTIES_DISPLAY_LOCATION"] != "TAB" && $bShowPropsTab):?>
-											<div class="wraps">
-												<hr>
-												<h4><?=($arParams["TAB_CHAR_NAME"] ? $arParams["TAB_CHAR_NAME"] : GetMessage("PROPERTIES_TAB"));?></h4>
-												<?$APPLICATION->ShowViewContent('PRODUCT_PROPS_INFO')?>
-											</div>
-										<?endif;?>
-
+										
 										<?if($bShowDocs):?>
 											<?$APPLICATION->ShowViewContent('PRODUCT_FILES_INFO')?>
 										<?endif;?>

@@ -13,119 +13,146 @@
 
 /* Объявление шрифтов PetrovSans */
 @font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-ExtraLight.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-ExtraLight.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-ExtraLight.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-ExtraLight.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-ExtraLight.ttf') format('truetype');
-    font-weight: 200;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Light.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Light.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Light.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Light.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Light.ttf') format('truetype');
-    font-weight: 300;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Regular.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Regular.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Regular.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Regular.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Regular.ttf') format('truetype');
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-Regular.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Medium.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Medium.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Medium.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Medium.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Medium.ttf') format('truetype');
-    font-weight: 500;
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-RegularItalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-Light.otf') format('opentype');
+    font-weight: 300;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-SemiLight.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-SemiLight.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-SemiLight.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-SemiLight.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-SemiLight.ttf') format('truetype');
-    font-weight: 350;
-    font-style: normal;
-    font-display: swap;
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-LightItalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
 }
 
 @font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Bold.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Bold.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Bold.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Bold.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Bold.ttf') format('truetype');
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-Bold.otf') format('opentype');
     font-weight: 700;
     font-style: normal;
-    font-display: swap;
 }
 
 @font-face {
-    font-family: 'Stem';
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Thin.eot');
-    src: url('../vendor/fonts/font-awesome/fonts/stem/Stem-Thin.eot?#iefix') format('embedded-opentype'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Thin.woff2') format('woff2'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Thin.woff') format('woff'),
-         url('../vendor/fonts/font-awesome/fonts/stem/Stem-Thin.ttf') format('truetype');
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-BoldItalic.otf') format('opentype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-BlackItalic.otf') format('opentype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-ExtraBold.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-ExtraBoldItalic.otf') format('opentype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-SemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-SemiBoldItalic.otf') format('opentype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-ExtraLight.otf') format('opentype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-ExtraLightItalic.otf') format('opentype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-Thin.otf') format('opentype');
     font-weight: 100;
     font-style: normal;
-    font-display: swap;
+}
+
+@font-face {
+    font-family: 'PetrovSans';
+    src: url('../vendor/fonts/font-awesome/fonts/petrov/PetrovSans-Trial-ThinItalic.otf') format('opentype');
+    font-weight: 100;
+    font-style: italic;
 }
 
 /* Применение шрифта ко всему сайту */
 body {
-    font-family: 'Stem', sans-serif !important;
+    font-family: 'PetrovSans', sans-serif !important;
 }
 
 /* Применение шрифта к заголовкам */
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: 'Stem', sans-serif !important;
+    font-family: 'PetrovSans', sans-serif !important;
 }
 
-/* Применение шрифта к кнопкам */
-.btn, 
+/* Применение шрифта к кнопкам и элементам формы */
 button,
 input[type="button"],
 input[type="submit"] {
-    font-family: 'Stem', sans-serif !important;
+    font-family: 'PetrovSans', sans-serif !important;
 }
 
 /* Применение шрифта к меню */
 .menu-row .mega-menu table td .wrap > a,
 .menu-row .mega-menu table td .wrap > span {
-    font-family: 'Stem', sans-serif !important;
+    font-family: 'PetrovSans', sans-serif !important;
 }
 
 /* Применение шрифта к ценам */
-.price, 
+.price,
 .cost,
 .price_value_block {
-    font-family: 'Stem', sans-serif !important;
+    font-family: 'PetrovSans', sans-serif !important;
 }
 
 .mobile-menu {
@@ -1223,7 +1250,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 }
 
 .email_input {
-    border-radius: 15px;
+    border-radius: 15px!important;
 }
 
 .card_flex .counter_wrapp .button_block a {

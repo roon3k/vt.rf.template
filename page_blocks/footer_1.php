@@ -121,11 +121,6 @@
 								<div class="print-block"><?=CNext::ShowPrintLink();?></div>
 								<div id="bx-composite-banner"></div>
 							</div>
-							<div class="pull-right pay_system_icons">
-								<span class="">
-									<?$APPLICATION->IncludeFile(SITE_DIR."include/footer/copy/pay_system_icons.php", Array(), Array("MODE" => "html", "NAME" => GetMessage("PAY_SYSTEM"), "TEMPLATE" => "include_area.php",));?>
-								</span>
-							</div>
 						</div>
 					</div>
 				</div>
