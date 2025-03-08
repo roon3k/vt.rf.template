@@ -394,7 +394,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				});
 			}
 			
-			// Функция для загрузки товаров по AJAX через нативное API Битрикс
+			// Заменяем функцию loadProducts на более надежную версию:
 			function loadProducts(sectionId, sectionLevel) {
 				// Находим контейнер с товарами
 				const productsContainer = document.querySelector('.catalog_block.items.block_list.grid-list');
@@ -404,22 +404,221 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 					return;
 				}
 				
+				// Запоминаем родительский контейнер
+				const parentContainer = productsContainer.parentNode;
+				
 				// Создаем и показываем индикатор загрузки
 				const loader = document.createElement('div');
 				loader.className = 'products-loader';
 				loader.innerHTML = '<div class="spinner"></div>';
-				productsContainer.parentNode.style.position = 'relative';
-				productsContainer.parentNode.appendChild(loader);
 				
-				// Используем bitrix компонент для обновления
-				BX.ajax.insertToNode('/ajax/load_products.php?SECTION_ID=' + sectionId + '&SECTION_LEVEL=' + sectionLevel + '&ajax=N', productsContainer.parentNode);
+				parentContainer.style.position = 'relative';
+				parentContainer.appendChild(loader);
 				
-				// Установим таймер для удаления лоадера после загрузки (через 2 секунды)
-				setTimeout(function() {
+				// Формируем данные для запроса
+				const formData = new FormData();
+				formData.append('ajax', 'Y');
+				formData.append('SECTION_ID', sectionId);
+				if (sectionLevel) {
+					formData.append('SECTION_LEVEL', sectionLevel);
+				}
+				
+				// Сохраняем текущую позицию скролла
+				const scrollPosition = window.scrollY;
+				
+				// Выполняем AJAX-запрос
+				fetch('/ajax/load_products.php', {
+					method: 'POST',
+					body: formData,
+					credentials: 'same-origin'
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Ошибка сети: ' + response.statusText);
+					}
+					return response.text();
+				})
+				.then(html => {
+					// Обрабатываем ответ
+					try {
+						// Пытаемся распарсить как JSON
+						const response = JSON.parse(html);
+						
+						if (response && response.success) {
+							if (response.productsHtml) {
+								const tempDiv = document.createElement('div');
+								tempDiv.innerHTML = response.productsHtml;
+								
+								const newProductsList = tempDiv.querySelector('.catalog_block.items.block_list.grid-list');
+								if (newProductsList) {
+									// Заменяем содержимое
+									productsContainer.innerHTML = newProductsList.innerHTML;
+									
+									// Инициализация скриптов Битрикс после загрузки
+									if (typeof BX !== 'undefined' && BX.ajax && BX.ajax.processScripts) {
+										const processed = BX.processHTML(response.productsHtml);
+										BX.ajax.processScripts(processed.SCRIPT);
+									}
+									
+									// Инициализация скриптов каталога
+									if (window.JCCatalogSectionBasket) {
+										const items = productsContainer.querySelectorAll('.catalog_item');
+										for (let i = 0; i < items.length; i++) {
+											const itemID = items[i].getAttribute('data-id') || items[i].getAttribute('data-item');
+											if (itemID) {
+												new JCCatalogSectionBasket(itemID);
+											}
+										}
+									}
+								} else {
+									productsContainer.innerHTML = response.productsHtml;
+								}
+							} else if (response.html) {
+								productsContainer.innerHTML = response.html;
+							}
+							
+							// Обновляем URL без перезагрузки страницы
+							if (response.sectionUrl) {
+								window.history.pushState({sectionId}, document.title, response.sectionUrl);
+							}
+							
+							// Обновляем фильтр если есть
+							if (response.filterHtml) {
+								// Ищем контейнер фильтра Aspro Next с указанными классами
+								const filterContainer = document.querySelector('.bx_filter.bx_filter_vertical.swipeignore');
+								
+								if (filterContainer) {
+									// Создаем временный div для парсинга HTML
+									const tempDiv = document.createElement('div');
+									tempDiv.innerHTML = response.filterHtml;
+									
+									// Ищем новый фильтр в полученном HTML
+									const newFilter = tempDiv.querySelector('.bx_filter.bx_filter_vertical.swipeignore') || 
+													 tempDiv.querySelector('.bx_filter_vertical') || 
+													 tempDiv.querySelector('.bx_filter');
+									
+									if (newFilter) {
+										// Сохраняем форму и ID, чтобы не потерять при замене
+										const formId = filterContainer.closest('form')?.id || '';
+										const formAction = filterContainer.closest('form')?.getAttribute('action') || '';
+										
+										// Заменяем содержимое фильтра
+										filterContainer.innerHTML = newFilter.innerHTML;
+										
+										// Если у формы есть ID и action, восстанавливаем их
+										if (formId && filterContainer.closest('form')) {
+											filterContainer.closest('form').id = formId;
+											if (formAction) {
+												filterContainer.closest('form').setAttribute('action', formAction);
+											}
+										}
+										
+										// Инициализация скриптов фильтра Aspro
+										if (typeof JCSmartFilter !== 'undefined') {
+											try {
+												// Получаем настройки смарт-фильтра
+												if (typeof smartFilter !== 'undefined') {
+													// Удаляем старый экземпляр, если он существует
+													delete smartFilter;
+												}
+												
+												// Создаем новый экземпляр с корректным ID формы
+												let smartFilterFormId = 'smartfilter';
+												const smartFilterForm = document.querySelector('#smartfilter');
+												if (smartFilterForm) {
+													smartFilterFormId = smartFilterForm.id;
+												}
+												
+												// Инициализируем фильтр
+												window.smartFilter = new JCSmartFilter(smartFilterFormId);
+												
+												// Переинициализация элементов интерфейса Aspro
+												if (typeof window.initSelectItem === 'function') {
+													window.initSelectItem();
+												}
+												
+												// Инициализация ползунков
+												const ranges = filterContainer.querySelectorAll('.bx_ui_slider_track');
+												ranges.forEach(range => {
+													if (range.id && typeof window.initSlider === 'function') {
+														window.initSlider(range.id);
+													}
+												});
+												
+												console.log('Фильтр успешно обновлен');
+											} catch (e) {
+												console.error('Ошибка инициализации фильтра:', e);
+											}
+										} else {
+											console.error('JCSmartFilter не определен');
+										}
+										
+										// Обновление блоков с выбранными элементами фильтра
+										if (typeof window.BX !== 'undefined') {
+											BX.onCustomEvent('updateSmartFilter');
+										}
+									} else {
+										console.error('Новый фильтр не найден в полученном HTML');
+									}
+								} else {
+									console.error('Контейнер фильтра не найден на странице');
+								}
+								
+								// Дополнительные функции Aspro для работы фильтра
+								if (typeof window.initSelects === 'function') {
+									window.initSelects(document);
+								}
+								
+								if (typeof window.initHoverBlock === 'function') {
+									window.initHoverBlock(document);
+								}
+							}
+						} else if (response && response.error) {
+							productsContainer.innerHTML = '<div class="alert alert-danger">' + response.error + '</div>';
+						} else {
+							throw new Error('Некорректный формат ответа');
+						}
+					} catch (e) {
+						// Если не JSON, считаем ответ HTML-кодом
+						console.log('Получен HTML-ответ вместо JSON, ошибка парсинга:', e);
+						productsContainer.innerHTML = html;
+					}
+					
+					// Восстанавливаем позицию скролла
+					window.scrollTo(0, scrollPosition);
+					
+					// Дополнительная инициализация компонентов Aspro
+					if (typeof window.initSly === 'function') {
+						window.initSly();
+					}
+					
+					if (typeof window.InitLazyLoad === 'function') {
+						window.InitLazyLoad();
+					}
+					
+					// Обновление количества товаров в корзине
+					if (typeof BX.Sale !== 'undefined' && BX.Sale.BasketComponent) {
+						BX.Sale.BasketComponent.sendRequest('refreshAjax', {});
+					}
+					
+					// Запускаем событие для уведомления других скриптов
+					document.dispatchEvent(new CustomEvent('products-loaded', {
+						detail: { 
+							sectionId: sectionId,
+							sectionLevel: sectionLevel 
+						}
+					}));
+				})
+				.catch(error => {
+					console.error('Ошибка загрузки товаров:', error);
+					productsContainer.innerHTML = '<div class="alert alert-danger">Не удалось загрузить товары. Пожалуйста, попробуйте еще раз.</div>';
+				})
+				.finally(() => {
+					// Удаляем индикатор загрузки
 					if (loader && loader.parentNode) {
 						loader.parentNode.removeChild(loader);
 					}
-				}, 2000);
+				});
 			}
 			
 			// Предзагрузка изображений перед инициализацией слайдера
