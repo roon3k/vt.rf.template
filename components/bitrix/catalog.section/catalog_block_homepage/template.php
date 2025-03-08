@@ -513,6 +513,7 @@ require_once(__DIR__ . '/price_helper.php');
     -webkit-line-clamp: 2; /* Ограничиваем двумя строками */
     -webkit-box-orient: vertical;
     margin-bottom: 10px !important; /* Одинаковый отступ после названия */
+	margin-top: 10px !important;
 }
 
 /* Стили для фиксированной высоты карточки в целом */
