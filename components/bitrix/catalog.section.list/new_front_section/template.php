@@ -482,9 +482,9 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 								window.history.pushState({sectionId}, document.title, response.sectionUrl);
 							}
 							
-							// Обновляем фильтр если есть
+							// Обновляем фильтр, если он есть в ответе
 							if (response.filterHtml) {
-								// Ищем контейнер фильтра Aspro Next с указанными классами
+								// Находим контейнер фильтра
 								const filterContainer = document.querySelector('.bx_filter.bx_filter_vertical.swipeignore');
 								
 								if (filterContainer) {
@@ -492,85 +492,55 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 									const tempDiv = document.createElement('div');
 									tempDiv.innerHTML = response.filterHtml;
 									
-									// Ищем новый фильтр в полученном HTML
+									// Найдем фильтр в полученном HTML
 									const newFilter = tempDiv.querySelector('.bx_filter.bx_filter_vertical.swipeignore') || 
 													 tempDiv.querySelector('.bx_filter_vertical') || 
 													 tempDiv.querySelector('.bx_filter');
 									
 									if (newFilter) {
-										// Сохраняем форму и ID, чтобы не потерять при замене
-										const formId = filterContainer.closest('form')?.id || '';
-										const formAction = filterContainer.closest('form')?.getAttribute('action') || '';
+										// Обновляем содержимое фильтра
+										const filterInner = filterContainer.querySelector('.bx_filter_section');
+										const newFilterInner = newFilter.querySelector('.bx_filter_section');
 										
-										// Заменяем содержимое фильтра
-										filterContainer.innerHTML = newFilter.innerHTML;
-										
-										// Если у формы есть ID и action, восстанавливаем их
-										if (formId && filterContainer.closest('form')) {
-											filterContainer.closest('form').id = formId;
-											if (formAction) {
-												filterContainer.closest('form').setAttribute('action', formAction);
-											}
-										}
-										
-										// Инициализация скриптов фильтра Aspro
-										if (typeof JCSmartFilter !== 'undefined') {
+										if (filterInner && newFilterInner) {
+											// Сохраняем состояние обработчиков
+											const oldSmartFilter = window.smartFilter;
+											
+											// Обновляем HTML
+											filterInner.innerHTML = newFilterInner.innerHTML;
+											
+											// Инициализация фильтра
 											try {
-												// Получаем настройки смарт-фильтра
-												if (typeof smartFilter !== 'undefined') {
-													// Удаляем старый экземпляр, если он существует
-													delete smartFilter;
+												// Пробуем использовать существующий объект фильтра
+												if (oldSmartFilter && typeof oldSmartFilter.bindPostEvents === 'function') {
+													oldSmartFilter.bindPostEvents();
+												} else {
+													// Если не получилось, создаем новый экземпляр
+													const filterForm = document.querySelector('#smartfilter');
+													if (filterForm && typeof JCSmartFilter !== 'undefined') {
+														window.smartFilter = new JCSmartFilter(filterForm.getAttribute('action'));
+													}
 												}
 												
-												// Создаем новый экземпляр с корректным ID формы
-												let smartFilterFormId = 'smartfilter';
-												const smartFilterForm = document.querySelector('#smartfilter');
-												if (smartFilterForm) {
-													smartFilterFormId = smartFilterForm.id;
-												}
-												
-												// Инициализируем фильтр
-												window.smartFilter = new JCSmartFilter(smartFilterFormId);
-												
-												// Переинициализация элементов интерфейса Aspro
-												if (typeof window.initSelectItem === 'function') {
-													window.initSelectItem();
+												// Инициализация элементов интерфейса
+												if (typeof initSelectItem === 'function') {
+													initSelectItem();
 												}
 												
 												// Инициализация ползунков
-												const ranges = filterContainer.querySelectorAll('.bx_ui_slider_track');
-												ranges.forEach(range => {
-													if (range.id && typeof window.initSlider === 'function') {
-														window.initSlider(range.id);
+												const sliders = filterContainer.querySelectorAll('.bx_ui_slider_track');
+												sliders.forEach(slider => {
+													if (slider.id && typeof initSlider === 'function') {
+														initSlider(slider.id);
 													}
 												});
 												
 												console.log('Фильтр успешно обновлен');
 											} catch (e) {
-												console.error('Ошибка инициализации фильтра:', e);
+												console.error('Ошибка при инициализации фильтра:', e);
 											}
-										} else {
-											console.error('JCSmartFilter не определен');
 										}
-										
-										// Обновление блоков с выбранными элементами фильтра
-										if (typeof window.BX !== 'undefined') {
-											BX.onCustomEvent('updateSmartFilter');
-										}
-									} else {
-										console.error('Новый фильтр не найден в полученном HTML');
 									}
-								} else {
-									console.error('Контейнер фильтра не найден на странице');
-								}
-								
-								// Дополнительные функции Aspro для работы фильтра
-								if (typeof window.initSelects === 'function') {
-									window.initSelects(document);
-								}
-								
-								if (typeof window.initHoverBlock === 'function') {
-									window.initHoverBlock(document);
 								}
 							}
 						} else if (response && response.error) {
@@ -774,22 +744,14 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 					}, 400);
 				}
 				
-				// Привязываем обработчики событий
-				prevBtn.addEventListener('click', prevSlide);
-				nextBtn.addEventListener('click', nextSlide);
-				
-				// Обработчик для активации раздела при клике
+				// Заменяем обработчик клика на элементы слайдера:
+
 				sliderItems.forEach((item, index) => {
 					const sliderItem = item.querySelector('.item');
 					
 					item.addEventListener('click', function(e) {
-						// Получаем ссылку внутри элемента
-						const link = e.target.closest('a');
-						
-						// Если клик был по ссылке, предотвращаем переход
-						if (link) {
-							e.preventDefault();
-						}
+						// Важно: предотвращаем стандартное действие в начале функции
+						e.preventDefault();
 						
 						// Убираем активный класс со всех элементов
 						sliderItems.forEach(el => {
