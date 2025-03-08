@@ -117,36 +117,27 @@
 				top: 50%;
 				transform: translateY(-50%);
 				background: rgba(255, 255, 255, 0.9);
-				/* Делаем более непрозрачным */
 				color: #333;
-				width: 40px;
-				height: 40px;
+				width: 36px;
+				height: 36px;
 				border-radius: 50%;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+				box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 				transition: all 0.3s ease;
 				pointer-events: auto;
 				z-index: 101;
-				/* Стрелки должны быть поверх всего */
 				cursor: pointer;
 				border: none;
 			}
 
-			.custom-slider-prev:hover,
-			.custom-slider-next:hover {
-				background: #fff;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-			}
-
-			/* Позиционируем стрелки на границах контейнера */
 			.custom-slider-prev {
-				left: 0;
+				left: 2px;
 			}
 
 			.custom-slider-next {
-				right: 0;
+				right: 2px;
 			}
 
 			/* Стили для лоадера */
@@ -221,9 +212,27 @@
 
 			/* Адаптивные стили */
 			@media (max-width: 767px) {
+				.custom-slider-prev,
+				.custom-slider-next {
+					width: 30px;
+					height: 30px;
+				}
+				
+				.custom-slider-prev {
+					left: 0;
+				}
+				
+				.custom-slider-next {
+					right: 0;
+				}
+				
+				.custom-slider-container::before,
+				.custom-slider-container::after {
+					width: 30px;
+				}
+				
 				.custom-slider {
-					padding: 0 30px;
-					/* Уменьшаем отступы на мобильных */
+					padding: 0 35px;
 				}
 
 				.custom-slider-container::before,
@@ -296,262 +305,351 @@
 	</div>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
-			// Получаем элементы лоадера
-			const loader = document.getElementById('section-carousel-loader');
+			const sliderContainer = document.querySelector('.custom-slider-container');
+			const slider = sliderContainer.querySelector('.custom-slider');
+			const sliderItems = Array.from(sliderContainer.querySelectorAll('.custom-slider-item'));
+			const prevBtn = sliderContainer.querySelector('.slider-arrow-prev');
+			const nextBtn = sliderContainer.querySelector('.slider-arrow-next');
+			const totalItems = sliderItems.length;
+			let itemsPerView = 1;
+			let itemWidth = 0;
+			let currentPosition = 0;
+			let isAnimating = false;
 
-			// Функция для предзагрузки всех изображений
-			function preloadAllImages() {
-				return new Promise(function(resolve) {
-					const images = [];
-					let loadedCount = 0;
-					const imgElements = document.querySelectorAll('#main-sections-carousel img');
-					const totalImages = imgElements.length;
-
-					// Если нет изображений, сразу возвращаем результат
-					if (totalImages === 0) {
-						resolve();
+			// Функция для установки начального активного элемента
+			function setInitialActiveItem() {
+				// Проверяем, есть ли в URL параметр section_id
+				const urlParams = new URLSearchParams(window.location.search);
+				const sectionId = urlParams.get('section_id');
+				
+				if (sectionId) {
+					// Находим элемент с указанным section_id
+					const activeItemIndex = sliderItems.findIndex(item => 
+						item.getAttribute('data-sect') === sectionId
+					);
+					
+					if (activeItemIndex >= 0) {
+						// Добавляем активный класс
+						sliderItems[activeItemIndex].querySelector('.item').classList.add('active');
+						
+						// Прокручиваем слайдер к выбранному элементу
+						if (activeItemIndex > itemsPerView - 1) {
+							currentPosition = activeItemIndex - (itemsPerView - 1);
+							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+						}
+						
 						return;
 					}
-
-					imgElements.forEach(function(imgEl) {
-						const imgSrc = imgEl.getAttribute('src');
-						if (imgSrc) {
-							const img = new Image();
-
-							img.onload = function() {
-								loadedCount++;
-								if (loadedCount === totalImages) {
-									resolve();
-								}
-							};
-
-							img.onerror = function() {
-								loadedCount++;
-								if (loadedCount === totalImages) {
-									resolve();
-								}
-							};
-
-							img.src = imgSrc;
-							images.push(img);
-						} else {
-							loadedCount++;
-							if (loadedCount === totalImages) {
-								resolve();
-							}
-						}
-					});
-
-					// Страховка: если по какой-то причине не все изображения загрузились за 3 секунды
-					setTimeout(function() {
-						resolve();
-					}, 3000);
-				});
+				}
+				
+				// Если нет параметра section_id или не найден элемент, устанавливаем первый элемент активным
+				if (sliderItems.length > 0) {
+					sliderItems[0].querySelector('.item').classList.add('active');
+				}
 			}
 
-			// Предзагрузка изображений перед инициализацией слайдера
-			preloadAllImages().then(function() {
-				// Скрываем лоадер
-				loader.style.display = 'none';
-
-				// Инициализация слайдера
-				const slider = document.querySelector('.custom-slider');
-				const sliderItems = document.querySelectorAll('.custom-slider-item');
-				const prevBtn = document.querySelector('.custom-slider-prev');
-				const nextBtn = document.querySelector('.custom-slider-next');
-
-				let currentPosition = 0;
-				let itemsPerView = 4;
-				let itemWidth = 0;
-				let totalItems = sliderItems.length;
-				let isAnimating = false;
-
-				// Функция обновления размеров слайдера
-				function updateSizes() {
-					const containerWidth = slider.parentElement.clientWidth - 80; // Учитываем размер места для стрелок
-
-					// Определяем количество элементов в видимой области в зависимости от размера экрана
-					if (window.innerWidth < 480) {
-						itemsPerView = 2;
-					} else if (window.innerWidth < 768) {
-						itemsPerView = 2;
-					} else if (window.innerWidth < 992) {
-						itemsPerView = 3;
-					} else {
-						itemsPerView = 4;
-					}
-
-					// Устанавливаем ширину элементов
-					itemWidth = containerWidth / itemsPerView;
-
-					sliderItems.forEach(item => {
-						item.style.width = `${itemWidth}px`;
-					});
-
-					// Проверяем текущую позицию и корректируем при необходимости
-					adjustPosition();
-
-					// Обновляем видимость кнопок навигации
-					updateNavButtons();
+			// Функция для обновления размеров элементов при изменении размера окна
+			function updateSizes() {
+				// Получаем ширину контейнера и определяем количество элементов в зависимости от ширины экрана
+				const containerWidth = sliderContainer.offsetWidth;
+				const windowWidth = window.innerWidth;
+				
+				if (windowWidth < 768) {
+					itemsPerView = Math.max(1, Math.floor(containerWidth / 120)); // На мобильных устройствах
+				} else if (windowWidth < 992) {
+					itemsPerView = Math.max(2, Math.floor(containerWidth / 180)); // На планшетах
+				} else {
+					itemsPerView = Math.max(2, Math.floor(containerWidth / 260)); // На десктопах
 				}
 
-				function adjustPosition() {
-					// Получаем максимально возможную позицию слайдера
-					// Если элементов меньше или равно количеству отображаемых, то max = 0
-					const maxPosition = Math.max(0, totalItems - itemsPerView);
+				// Ширина элемента с учетом пространства для стрелок навигации
+				// Оставляем 40px с каждой стороны для стрелок, если кнопки показаны
+				const navWidth = prevBtn && prevBtn.offsetWidth > 0 ? 80 : 0;
+				itemWidth = (containerWidth - navWidth) / itemsPerView;
+				
+				// Устанавливаем ширину элементов
+				sliderItems.forEach(item => {
+					item.style.width = `${itemWidth}px`;
+				});
+				
+				// Проверяем, не вышла ли текущая позиция за границы слайдера после изменения размеров
+				const maxPosition = Math.max(0, totalItems - itemsPerView);
+				currentPosition = Math.min(currentPosition, maxPosition);
+				
+				// Обновляем положение слайдера
+				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+				
+				// Обновляем видимость кнопок навигации
+				updateNavButtons();
+			}
 
-					// Ограничиваем текущую позицию
-					currentPosition = Math.min(Math.max(0, currentPosition), maxPosition);
-
-					// Если элементов меньше или равно количеству отображаемых, то центрируем их
-					if (totalItems <= itemsPerView) {
-						// Центрируем элементы
-						slider.style.justifyContent = 'center';
-						slider.style.transform = 'translateX(0)';
-					} else {
-						// Иначе сдвигаем слайдер
-						slider.style.justifyContent = 'flex-start';
-						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-					}
+			// Функция для обновления состояния кнопок навигации
+			function updateNavButtons() {
+				if (prevBtn && nextBtn) {
+					prevBtn.classList.toggle('disabled', currentPosition <= 0);
+					nextBtn.classList.toggle('disabled', currentPosition >= totalItems - itemsPerView);
 				}
+			}
 
-				// Функция для обновления состояния кнопок навигации
-				function updateNavButtons() {
-					// Показываем/скрываем кнопки в зависимости от текущей позиции
-					if (totalItems <= itemsPerView) {
-						// Если все элементы помещаются, скрываем обе кнопки
-						prevBtn.style.display = 'none';
-						nextBtn.style.display = 'none';
-					} else {
-						// Если элементов больше чем может быть отображено
-						const maxPosition = totalItems - itemsPerView;
+			// Функции для переключения слайдов
+			function prevSlide() {
+				if (isAnimating || currentPosition <= 0) return;
+				
+				isAnimating = true;
+				currentPosition = Math.max(0, currentPosition - 1);
+				
+				slider.style.transition = 'transform 0.3s ease-out';
+				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+				
+				setTimeout(() => {
+					isAnimating = false;
+				}, 300);
+				
+				updateNavButtons();
+			}
 
-						// Левая кнопка активна только если мы не в начале
-						prevBtn.style.opacity = currentPosition <= 0 ? '0.5' : '1';
-						prevBtn.style.pointerEvents = currentPosition <= 0 ? 'none' : 'auto';
+			function nextSlide() {
+				const maxPosition = Math.max(0, totalItems - itemsPerView);
+				if (isAnimating || currentPosition >= maxPosition) return;
+				
+				isAnimating = true;
+				currentPosition = Math.min(maxPosition, currentPosition + 1);
+				
+				slider.style.transition = 'transform 0.3s ease-out';
+				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+				
+				setTimeout(() => {
+					isAnimating = false;
+				}, 300);
+				
+				updateNavButtons();
+			}
 
-						// Правая кнопка активна только если мы не в конце
-						nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
-						nextBtn.style.pointerEvents = currentPosition >= maxPosition ? 'none' : 'auto';
-
-						// Показываем обе кнопки
-						prevBtn.style.display = 'flex';
-						nextBtn.style.display = 'flex';
-					}
-				}
-
-				// Обработчики кнопок навигации
-				function prevSlide() {
-					if (isAnimating) return;
-					isAnimating = true;
-
-					// Проверяем, не в начале ли мы
-					if (currentPosition > 0) {
-						currentPosition = Math.max(0, currentPosition - 1);
-						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-
-						// Обновляем состояние кнопок
-						updateNavButtons();
-					}
-
-					// Защита от быстрых множественных кликов
-					setTimeout(() => {
-						isAnimating = false;
-					}, 400); // Время анимации в стилях
-				}
-
-				function nextSlide() {
-					if (isAnimating) return;
-					isAnimating = true;
-
-					// Проверяем, не в конце ли мы
-					const maxPosition = Math.max(0, totalItems - itemsPerView);
-					if (currentPosition < maxPosition) {
-						currentPosition = Math.min(currentPosition + 1, maxPosition);
-						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-
-						// Обновляем состояние кнопок
-						updateNavButtons();
-					}
-
-					setTimeout(() => {
-						isAnimating = false;
-					}, 400);
-				}
-
-				// Привязываем обработчики событий
+			// Назначаем обработчики событий для кнопок навигации
+			if (prevBtn && nextBtn) {
 				prevBtn.addEventListener('click', prevSlide);
 				nextBtn.addEventListener('click', nextSlide);
+			}
 
-				// Обработчик для активации раздела при клике
-				sliderItems.forEach((item, index) => {
-					const sliderItem = item.querySelector('.item');
+			// Переменные для отслеживания свайпов
+			let touchStartX = 0;
+			let touchCurrentX = 0;
+			let touchStartTime = 0;
+			let isDragging = false;
+			let startTransform = 0;
+			let lastDelta = 0;
+			let velocity = 0;
+			let lastMoveTime = 0;
+			let isTap = true; // Флаг для определения тапа
 
-					item.addEventListener('click', function(e) {
-						// Если клик был не по ссылке, а по самому элементу
-						if (!e.target.closest('a')) {
-							e.preventDefault();
+			// Функция для получения текущего смещения слайдера
+			function getCurrentTransform() {
+				const style = window.getComputedStyle(slider);
+				const matrix = new WebKitCSSMatrix(style.transform);
+				return matrix.e; // Горизонтальное смещение
+			}
 
-							// Убираем активный класс со всех элементов
-							sliderItems.forEach(el => {
-								el.querySelector('.item').classList.remove('active');
-							});
+			// Начало касания
+			slider.addEventListener('touchstart', function(e) {
+				if (isAnimating) return;
+				
+				touchStartX = e.touches[0].clientX;
+				touchCurrentX = touchStartX;
+				touchStartTime = Date.now();
+				lastMoveTime = touchStartTime;
+				isDragging = true;
+				isTap = true; // Предполагаем, что это может быть тап
+				velocity = 0;
+				
+				// Запоминаем начальную позицию слайдера
+				startTransform = getCurrentTransform();
+				
+				// Останавливаем анимацию во время свайпа
+				slider.style.transition = 'none';
+			}, {passive: true});
 
-							// Добавляем активный класс текущему элементу
-							sliderItem.classList.add('active');
-
-							// Прокручиваем к этому элементу
-							const maxPosition = Math.max(0, totalItems - itemsPerView);
-							currentPosition = Math.max(0, Math.min(index, maxPosition));
-							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-
-							// Обновляем состояние кнопок
-							updateNavButtons();
-						}
-					});
-				});
-
-				// Инициализация слайдера и обработка изменений размера окна
-				updateSizes();
-				window.addEventListener('resize', updateSizes);
-
-				// Поддержка свайпов для мобильных устройств
-				let touchStartX = 0;
-				let touchEndX = 0;
-
-				slider.addEventListener('touchstart', function(e) {
-					touchStartX = e.changedTouches[0].screenX;
-				}, {
-					passive: true
-				});
-
-				slider.addEventListener('touchend', function(e) {
-					touchEndX = e.changedTouches[0].screenX;
-					handleSwipe();
-				}, {
-					passive: true
-				});
-
-				function handleSwipe() {
-					const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
-
-					// Не обрабатываем свайпы, если все элементы помещаются на экране
-					if (totalItems <= itemsPerView) return;
-
-					if (touchEndX - touchStartX > swipeThreshold) {
-						// Свайп вправо - только если не в начале
-						if (currentPosition > 0) {
-							prevSlide();
-						}
-					} else if (touchStartX - touchEndX > swipeThreshold) {
-						// Свайп влево - только если не в конце
-						const maxPosition = Math.max(0, totalItems - itemsPerView);
-						if (currentPosition < maxPosition) {
-							nextSlide();
-						}
-					}
+			// Перемещение пальца
+			slider.addEventListener('touchmove', function(e) {
+				if (!isDragging) return;
+				
+				const currentX = e.touches[0].clientX;
+				const delta = currentX - touchStartX;
+				
+				// Если палец двигается больше чем на 10px, это не тап
+				if (Math.abs(delta) > 10) {
+					isTap = false;
 				}
+				
+				const now = Date.now();
+				const dt = now - lastMoveTime;
+				
+				// Расчет мгновенной скорости свайпа
+				if (dt > 0) {
+					velocity = (currentX - touchCurrentX) / dt;
+				}
+				
+				touchCurrentX = currentX;
+				lastMoveTime = now;
+				lastDelta = delta;
+				
+				// Применяем перемещение только если это не тап
+				if (!isTap) {
+					// Применяем перемещение с учетом границ
+					const maxOffset = Math.max(0, totalItems - itemsPerView) * itemWidth;
+					let newOffset = startTransform + delta;
+					
+					// Добавляем сопротивление при выходе за границы
+					if (newOffset > 0) {
+						newOffset = newOffset / 3;
+					} else if (newOffset < -maxOffset) {
+						const overscroll = -(newOffset + maxOffset);
+						newOffset = -maxOffset - overscroll / 3;
+					}
+					
+					slider.style.transform = `translateX(${newOffset}px)`;
+				}
+			}, {passive: true});
+
+			// Отпускание пальца
+			slider.addEventListener('touchend', function(e) {
+				if (!isDragging) return;
+				isDragging = false;
+				
+				// Обрабатываем тап (короткое касание)
+				if (isTap) {
+					// Находим элемент, по которому был сделан тап
+					const touch = e.changedTouches[0];
+					const tappedElement = document.elementFromPoint(touch.clientX, touch.clientY);
+					
+					// Ищем родительский элемент .custom-slider-item
+					const sliderItem = tappedElement.closest('.custom-slider-item');
+					
+					if (sliderItem) {
+						// Находим ссылку внутри слайда
+						const link = sliderItem.querySelector('a');
+						if (link && link.href) {
+							// Переходим по ссылке
+							window.location.href = link.href;
+							return;
+						}
+						
+						// Симулируем клик на элемент, если нет прямой ссылки
+						sliderItem.click();
+					}
+					
+					return;
+				}
+				
+				// Восстанавливаем анимацию для свайпа
+				slider.style.transition = 'transform 0.3s ease-out';
+				
+				const touchDuration = Date.now() - touchStartTime;
+				const delta = lastDelta;
+				
+				// Если это был свайп, а не тап
+				if (!isTap && (Math.abs(delta) > 20 || Math.abs(velocity) > 0.5)) {
+					// Смотрим, сколько элементов нужно прокрутить на основе скорости и расстояния
+					let slideChange = 0;
+					
+					if (Math.abs(delta) > 50) {
+						// Базовое определение по расстоянию
+						slideChange = Math.sign(delta);
+					}
+					
+					// Добавляем влияние скорости для быстрых свайпов
+					if (Math.abs(velocity) > 0.5 && touchDuration < 300) {
+						slideChange = Math.sign(velocity) * Math.min(3, Math.floor(Math.abs(velocity) / 0.5));
+					}
+					
+					// Применяем изменение с учетом границ
+					if (slideChange !== 0) {
+						const maxPosition = Math.max(0, totalItems - itemsPerView);
+						const newPosition = Math.max(0, Math.min(maxPosition, currentPosition - slideChange));
+						
+						// Обновляем позицию
+						currentPosition = newPosition;
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					} else {
+						// Возвращаем к ближайшему слайду
+						snapToSlide();
+					}
+				} else {
+					// Возвращаемся к ближайшему слайду если свайп был слишком слабым
+					snapToSlide();
+				}
+				
+				// Обновляем кнопки после свайпа
+				updateNavButtons();
+			}, {passive: true});
+
+			// Функция для выравнивания по ближайшему слайду
+			function snapToSlide() {
+				const currentOffset = getCurrentTransform();
+				const closestSlide = Math.round(-currentOffset / itemWidth);
+				const maxPosition = Math.max(0, totalItems - itemsPerView);
+				
+				currentPosition = Math.max(0, Math.min(maxPosition, closestSlide));
+				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+			}
+			
+			// Обработчик для активации раздела при клике
+			sliderItems.forEach((item, index) => {
+				const sliderItem = item.querySelector('.item');
+				
+				item.addEventListener('click', function(e) {
+					// Проверяем, не было ли движения пальцем (свайп)
+					if (isDragging || isAnimating) {
+						return;
+					}
+					
+					// Находим ссылку внутри элемента
+					const link = item.querySelector('a');
+					
+					// Если есть ссылка, переходим по ней
+					if (link && link.href) {
+						window.location.href = link.href;
+						return;
+					}
+					
+					// Если нет прямой ссылки, активируем раздел
+					// Убираем активный класс со всех элементов
+					sliderItems.forEach(el => {
+						el.querySelector('.item').classList.remove('active');
+					});
+					
+					// Добавляем активный класс текущему элементу
+					sliderItem.classList.add('active');
+					
+					// Загружаем товары для выбранного раздела через AJAX
+					const sectionId = item.getAttribute('data-sect');
+					const sectionLevel = parseInt(item.getAttribute('data-level') || "1");
+					
+					if (sectionId) {
+						loadProducts(sectionId, sectionLevel);
+					}
+					
+					// Если элемент находится вне видимой области, делаем его видимым
+					if (index < currentPosition) {
+						// Если элемент находится левее видимой области
+						currentPosition = index;
+					} else if (index >= currentPosition + itemsPerView) {
+						// Если элемент находится правее видимой области
+						currentPosition = index - itemsPerView + 1;
+					}
+					
+					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					
+					// Обновляем состояние кнопок
+					updateNavButtons();
+				});
 			});
+
+			// Инициализация слайдера
+			setInitialActiveItem();
+			updateSizes();
+			
+			// Обработка изменений размера окна
+			window.addEventListener('resize', updateSizes);
 		});
 	</script>
 <? endif; ?>

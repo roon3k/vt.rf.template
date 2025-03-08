@@ -800,30 +800,210 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				prevBtn.addEventListener('click', prevSlide);
 				nextBtn.addEventListener('click', nextSlide);
 
+				// Слушатели событий для свайпов
+				let touchStartX = 0;
+				let touchCurrentX = 0;
+				let touchStartTime = 0;
+				let isDragging = false;
+				let startTransform = 0;
+				let lastDelta = 0;
+				let velocity = 0;
+				let lastMoveTime = 0;
+				let isTap = true; // Флаг для определения тапа
+
+				// Функция для получения текущего смещения слайдера
+				function getCurrentTransform() {
+					const style = window.getComputedStyle(slider);
+					const matrix = new WebKitCSSMatrix(style.transform);
+					return matrix.e; // Горизонтальное смещение
+				}
+
+				// Начало касания
+				slider.addEventListener('touchstart', function(e) {
+					if (isAnimating) return;
+					
+					touchStartX = e.touches[0].clientX;
+					touchCurrentX = touchStartX;
+					touchStartTime = Date.now();
+					lastMoveTime = touchStartTime;
+					isDragging = true;
+					isTap = true; // Предполагаем, что это может быть тап
+					velocity = 0;
+					
+					// Запоминаем начальную позицию слайдера
+					startTransform = getCurrentTransform();
+					
+					// Останавливаем анимацию во время свайпа
+					slider.style.transition = 'none';
+				}, {passive: true});
+
+				// Перемещение пальца
+				slider.addEventListener('touchmove', function(e) {
+					if (!isDragging) return;
+					
+					const currentX = e.touches[0].clientX;
+					const delta = currentX - touchStartX;
+					
+					// Если палец двигается больше чем на 10px, это не тап
+					if (Math.abs(delta) > 10) {
+						isTap = false;
+					}
+					
+					const now = Date.now();
+					const dt = now - lastMoveTime;
+					
+					// Расчет мгновенной скорости свайпа
+					if (dt > 0) {
+						velocity = (currentX - touchCurrentX) / dt;
+					}
+					
+					touchCurrentX = currentX;
+					lastMoveTime = now;
+					lastDelta = delta;
+					
+					// Применяем перемещение только если это не тап
+					if (!isTap) {
+						// Применяем перемещение с учетом границ
+						const maxOffset = Math.max(0, totalItems - itemsPerView) * itemWidth;
+						let newOffset = startTransform + delta;
+						
+						// Добавляем сопротивление при выходе за границы
+						if (newOffset > 0) {
+							newOffset = newOffset / 3;
+						} else if (newOffset < -maxOffset) {
+							const overscroll = -(newOffset + maxOffset);
+							newOffset = -maxOffset - overscroll / 3;
+						}
+						
+						slider.style.transform = `translateX(${newOffset}px)`;
+					}
+				}, {passive: true});
+
+				// Отпускание пальца
+				slider.addEventListener('touchend', function(e) {
+					if (!isDragging) return;
+					isDragging = false;
+					
+					// Обрабатываем тап (короткое касание)
+					if (isTap) {
+						// Находим элемент, по которому был сделан тап
+						const touch = e.changedTouches[0];
+						const tappedElement = document.elementFromPoint(touch.clientX, touch.clientY);
+						
+						// Ищем родительский элемент .custom-slider-item
+						const sliderItem = tappedElement.closest('.custom-slider-item');
+						
+						if (sliderItem) {
+							// Находим ссылку внутри слайда
+							const link = sliderItem.querySelector('a');
+							if (link && link.href) {
+								// Переходим по ссылке
+								window.location.href = link.href;
+								return;
+							}
+							
+							// Симулируем клик на элемент, если нет прямой ссылки
+							sliderItem.click();
+						}
+						
+						return;
+					}
+					
+					// Восстанавливаем анимацию для свайпа
+					slider.style.transition = 'transform 0.3s ease-out';
+					
+					const touchDuration = Date.now() - touchStartTime;
+					const delta = lastDelta;
+					
+					// Если это был свайп, а не тап
+					if (!isTap && (Math.abs(delta) > 20 || Math.abs(velocity) > 0.5)) {
+						// Смотрим, сколько элементов нужно прокрутить на основе скорости и расстояния
+						let slideChange = 0;
+						
+						if (Math.abs(delta) > 50) {
+							// Базовое определение по расстоянию
+							slideChange = Math.sign(delta);
+						}
+						
+						// Добавляем влияние скорости для быстрых свайпов
+						if (Math.abs(velocity) > 0.5 && touchDuration < 300) {
+							slideChange = Math.sign(velocity) * Math.min(3, Math.floor(Math.abs(velocity) / 0.5));
+						}
+						
+						// Применяем изменение с учетом границ
+						if (slideChange !== 0) {
+							const maxPosition = Math.max(0, totalItems - itemsPerView);
+							const newPosition = Math.max(0, Math.min(maxPosition, currentPosition - slideChange));
+							
+							// Обновляем позицию
+							currentPosition = newPosition;
+							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+							
+							// Вызываем функцию обновления кнопок навигации, если она определена
+							if (typeof updateNavButtons === 'function') {
+								updateNavButtons();
+							}
+						} else {
+							// Возвращаем к ближайшему слайду
+							snapToSlide();
+						}
+					} else {
+						// Возвращаемся к ближайшему слайду если свайп был слишком слабым
+						snapToSlide();
+					}
+				}, {passive: true});
+
+				// Функция для выравнивания по ближайшему слайду
+				function snapToSlide() {
+					const currentOffset = getCurrentTransform();
+					const closestSlide = Math.round(-currentOffset / itemWidth);
+					const maxPosition = Math.max(0, totalItems - itemsPerView);
+					
+					currentPosition = Math.max(0, Math.min(maxPosition, closestSlide));
+					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					
+					// Вызываем функцию обновления кнопок навигации, если она определена
+					if (typeof updateNavButtons === 'function') {
+						updateNavButtons();
+					}
+				}
+				
 				// Обработчик для активации раздела при клике
 				sliderItems.forEach((item, index) => {
 					const sliderItem = item.querySelector('.item');
-
+					
 					item.addEventListener('click', function(e) {
-						// Важно: предотвращаем стандартное действие для ссылок
-						e.preventDefault();
-
+						// Проверяем, не было ли движения пальцем (свайп)
+						if (isDragging || isAnimating) {
+							return;
+						}
+						
+						// Находим ссылку внутри элемента
+						const link = item.querySelector('a');
+						
+						// Если есть ссылка, переходим по ней
+						if (link && link.href) {
+							window.location.href = link.href;
+							return;
+						}
+						
+						// Если нет прямой ссылки, активируем раздел
 						// Убираем активный класс со всех элементов
 						sliderItems.forEach(el => {
 							el.querySelector('.item').classList.remove('active');
 						});
-
+						
 						// Добавляем активный класс текущему элементу
 						sliderItem.classList.add('active');
-
+						
 						// Загружаем товары для выбранного раздела через AJAX
 						const sectionId = item.getAttribute('data-sect');
 						const sectionLevel = parseInt(item.getAttribute('data-level') || "1");
-
+						
 						if (sectionId) {
 							loadProducts(sectionId, sectionLevel);
 						}
-
+						
 						// Если элемент находится вне видимой области, делаем его видимым
 						if (index < currentPosition) {
 							// Если элемент находится левее видимой области
@@ -832,9 +1012,9 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 							// Если элемент находится правее видимой области
 							currentPosition = index - itemsPerView + 1;
 						}
-
+						
 						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-
+						
 						// Обновляем состояние кнопок
 						updateNavButtons();
 					});
@@ -843,7 +1023,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				// Инициализация слайдера и обработка изменений размера окна
 				updateSizes();
 				window.addEventListener('resize', updateSizes);
-
+				
 				// Обработка навигации по истории браузера (кнопки Назад/Вперед)
 				window.addEventListener('popstate', function(event) {
 					if (event.state && event.state.sectionId) {
@@ -855,43 +1035,6 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						}
 					}
 				});
-
-				// Поддержка свайпов для мобильных устройств
-				let touchStartX = 0;
-				let touchEndX = 0;
-
-				slider.addEventListener('touchstart', function(e) {
-					touchStartX = e.changedTouches[0].screenX;
-				}, {
-					passive: true
-				});
-
-				slider.addEventListener('touchend', function(e) {
-					touchEndX = e.changedTouches[0].screenX;
-					handleSwipe();
-				}, {
-					passive: true
-				});
-
-				function handleSwipe() {
-					const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
-
-					// Не обрабатываем свайпы, если все элементы помещаются на экране
-					if (totalItems <= itemsPerView) return;
-
-					if (touchEndX - touchStartX > swipeThreshold) {
-						// Свайп вправо - только если не в начале
-						if (currentPosition > 0) {
-							prevSlide();
-						}
-					} else if (touchStartX - touchEndX > swipeThreshold) {
-						// Свайп влево - только если не в конце
-						const maxPosition = Math.max(0, totalItems - itemsPerView);
-						if (currentPosition < maxPosition) {
-							nextSlide();
-						}
-					}
-				}
 
 				// Показываем слайдер после инициализации
 				slider.style.opacity = '1';
