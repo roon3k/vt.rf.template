@@ -130,8 +130,18 @@ body {
 }
 
 /* Применение шрифта к заголовкам */
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
     font-family: 'PetrovSans', sans-serif !important;
 }
 
@@ -143,8 +153,8 @@ input[type="submit"] {
 }
 
 /* Применение шрифта к меню */
-.menu-row .mega-menu table td .wrap > a,
-.menu-row .mega-menu table td .wrap > span {
+.menu-row .mega-menu table td .wrap>a,
+.menu-row .mega-menu table td .wrap>span {
     font-family: 'PetrovSans', sans-serif !important;
 }
 
@@ -967,7 +977,7 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     flex-direction: row;
     justify-content: space-between;
     /* width: 50% !important; */
-    width: 100%!important;
+    width: 100% !important;
     margin: 3px 0;
 }
 
@@ -1203,8 +1213,9 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
     font-size: 18px;
     font-weight: 700;
 }
+
 .card_flex .counter_wrapp .button_block a {
-     display: flex;
+    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -1213,51 +1224,67 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 .info_item .middle_info .prices .discount * {
     text-decoration: line-through;
 }
+
 .cost.prices .price.discount {
     text-decoration: none;
 }
+
 .btn.white.grey {
-    color: #ffffff!important;
+    color: #ffffff !important;
 }
+
 #mobileheader .logo img {
-    margin-left: 30px; 
+    margin-left: 30px;
 }
+
 @media (max-width: 777px) {
 
     .card_flex {
         flex-direction: column;
     }
+
     .card_flex .counter_wrapp {
         width: 100%;
         margin-top: 10px;
     }
+
     .card_flex .counter_wrapp .button_block {
         width: 100%;
     }
-  
+
 }
 
 .btn {
-    color: #ffffff!important;
-}
-.left_block .subscribe-form input.send_btn {
-    background: #2c7e7b url(/bitrix/templates/aspro_next/images/svg/ai.svg) -23px -39px no-repeat!important; 
-    opacity: 1!important;
+    color: #ffffff !important;
 }
 
-.btn.btn-default.white.white-bg:hover, .btn-default.white.white-bg:active, .btn-default.white.white-bg:focus {
-    color: #ffffff!important;
+.left_block .subscribe-form input.send_btn {
+    background: #2c7e7b url(/bitrix/templates/aspro_next/images/svg/ai.svg) -23px -39px no-repeat !important;
+    opacity: 1 !important;
+}
+
+.btn.btn-default.white.white-bg:hover,
+.btn-default.white.white-bg:active,
+.btn-default.white.white-bg:focus {
+    color: #ffffff !important;
 }
 
 .email_input {
-    border-radius: 15px!important;
+    border-radius: 15px !important;
 }
 
 .card_flex .counter_wrapp .button_block a {
     height: 55px;
 }
 
-.title_block, a.dark_link, ul.menu .see_more, ul.menu .see_more a, .catalog_item .item-title a, .catalog_item .item-title a span, .view-item .item-title a span, .menu-row.middle-block .mega-menu table td .wrap>a>div {
+.title_block,
+a.dark_link,
+ul.menu .see_more,
+ul.menu .see_more a,
+.catalog_item .item-title a,
+.catalog_item .item-title a span,
+.view-item .item-title a span,
+.menu-row.middle-block .mega-menu table td .wrap>a>div {
     font-weight: 500;
 }
 
@@ -1291,8 +1318,13 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 #main-sections-carousel .owl-stage {
@@ -1331,8 +1363,13 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .img-wrapper {
@@ -1370,8 +1407,13 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 #main-sections-carousel .owl-item.cloned img {
@@ -1386,16 +1428,41 @@ body .ajax_load.block .counter_wrapp.wrapp_ctl {
 
 /* Добавляем стили для предотвращения исчезновения изображений */
 #main-sections-carousel img {
-    display: block !important; /* Всегда отображаем изображения */
+    display: block !important;
+    /* Всегда отображаем изображения */
     max-width: 100%;
     height: auto;
 }
 
 
-.sale-personal-section-index-block, .personal_wrapper .orders_wrapper .row.col-md-12.col-sm-12 {
+.sale-personal-section-index-block,
+.personal_wrapper .orders_wrapper .row.col-md-12.col-sm-12 {
     border-radius: 15px;
 }
 
 .auth_wrapp .form-footer .register {
     color: #308582 !important;
+}
+
+@media (max-width: 768px) {
+    .advantage_icon {
+        margin: 0 15px 15px 15px !important;
+        }
+
+    .advantage_item {
+        text-align: left!important;
+        padding: 0 30px!important;
+    }
+    .bottom-menu .items {
+        text-align: left!important;
+    }
+    .catalog_section_list .section_item li.name a span {
+        font-weight: 500!important;
+    }
+    .catalog_section_list .section_item li.name {
+        margin-top: 15px!important;
+    }
+    footer .bottom-under .inner-wrapper .copy-block .copy, footer .print-link {
+        padding-bottom: 37px!important;
+    }
 }

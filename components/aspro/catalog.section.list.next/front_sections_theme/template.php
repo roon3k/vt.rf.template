@@ -12,32 +12,33 @@
 				<a href="<?= SITE_DIR . $arParams["ALL_URL"]; ?>"><?= $arParams["TITLE_BLOCK_ALL"]; ?></a>
 			</div>
 		<? endif; ?>
-		
+
 		<style>
 			/* Стили для кастомного слайдера */
 			.custom-slider-container {
 				position: relative;
 				width: 100%;
 				overflow: hidden;
-				padding: 0 40px; /* Добавляем отступы для стрелок */
+				padding: 0 40px;
+				/* Добавляем отступы для стрелок */
 			}
-			
+
 			.custom-slider {
 				display: flex;
 				transition: transform 0.4s ease;
 			}
-			
+
 			.custom-slider-item {
 				flex: 0 0 auto;
 				transition: all 0.3s ease;
 			}
-			
+
 			/* Стили для компактной карусели */
 			#main-sections-carousel .item-section {
 				padding: 10px;
 				transition: all 0.3s ease;
 			}
-			
+
 			#main-sections-carousel .item {
 				text-align: center;
 				padding: 10px;
@@ -45,14 +46,14 @@
 				transition: all 0.3s ease;
 				cursor: pointer;
 			}
-			
+
 			/* Эффект увеличения при наведении на весь элемент */
 			#main-sections-carousel .item:hover {
 				transform: scale(1.05);
 				z-index: 2;
 				position: relative;
 			}
-			
+
 			#main-sections-carousel .img {
 				margin-bottom: 10px;
 				overflow: hidden;
@@ -61,12 +62,14 @@
 				justify-content: center;
 				align-items: center;
 			}
-			
+
 			#main-sections-carousel .img img {
 				max-width: 100%;
 				height: auto;
+				width: 100px;
+				height: 100px;
 			}
-			
+
 			#main-sections-carousel .name {
 				font-size: 14px;
 				line-height: 1.2;
@@ -74,7 +77,7 @@
 				height: 34px;
 				overflow: hidden;
 			}
-			
+
 			/* Стили для стрелок навигации */
 			.custom-slider-nav {
 				position: absolute;
@@ -84,7 +87,7 @@
 				height: 100%;
 				pointer-events: none;
 			}
-			
+
 			.custom-slider-prev,
 			.custom-slider-next {
 				position: absolute;
@@ -105,42 +108,47 @@
 				cursor: pointer;
 				border: none;
 			}
-			
+
 			.custom-slider-prev:hover,
 			.custom-slider-next:hover {
 				background: #fff;
 				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 			}
-			
+
 			.custom-slider-prev {
-				left: 5px; /* Изменено с -18px на 5px */
+				left: 5px;
+				/* Изменено с -18px на 5px */
 			}
-			
+
 			.custom-slider-next {
-				right: 5px; /* Изменено с -18px на 5px */
+				right: 5px;
+				/* Изменено с -18px на 5px */
 			}
-			
+
 			/* Адаптивность для мобильных устройств */
 			@media (max-width: 767px) {
 				.custom-slider-container {
-					padding: 0 30px; /* Уменьшаем отступы на мобильных */
+					padding: 0 30px;
+					/* Уменьшаем отступы на мобильных */
 				}
-				
+
 				#main-sections-carousel .name {
 					font-size: 12px;
 					height: 30px;
 				}
-				
+
 				.custom-slider-prev {
-					left: 2px; /* Изменено с -10px на 2px */
+					left: 2px;
+					/* Изменено с -10px на 2px */
 				}
-				
+
 				.custom-slider-next {
-					right: 2px; /* Изменено с -10px на 2px */
+					right: 2px;
+					/* Изменено с -10px на 2px */
 				}
 			}
 		</style>
-		
+
 		<div class="list items">
 			<div class="custom-slider-container">
 				<div class="custom-slider" id="main-sections-carousel">
@@ -173,10 +181,14 @@
 				</div>
 				<div class="custom-slider-nav">
 					<button class="custom-slider-prev">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+							<path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6" />
+						</svg>
 					</button>
 					<button class="custom-slider-next">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+							<path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6" />
+						</svg>
 					</button>
 				</div>
 			</div>
@@ -194,23 +206,34 @@
 					images.push(img);
 				}
 			});
-			
+
 			// Инициализация слайдера
 			const slider = document.querySelector('.custom-slider');
 			const sliderItems = document.querySelectorAll('.custom-slider-item');
 			const prevBtn = document.querySelector('.custom-slider-prev');
 			const nextBtn = document.querySelector('.custom-slider-next');
-			
+
 			let currentPosition = 0;
 			let itemsPerView = 4;
 			let itemWidth = 0;
 			let totalItems = sliderItems.length;
 			let isAnimating = false;
-			
+
 			// Функция обновления размеров слайдера
 			function updateSizes() {
-				const containerWidth = slider.parentElement.clientWidth;
-				
+				// Увеличиваем отступ на маленьких экранах для стрелок
+				let arrowSpace = 80; // Стандартный отступ для стрелок (по 40px с каждой стороны)
+
+				// На маленьких экранах увеличиваем отступ
+				if (window.innerWidth < 480) {
+					arrowSpace = 90; // Больше места для стрелок на маленьких экранах
+				} else if (window.innerWidth < 768) {
+					arrowSpace = 85; // Для средних экранов
+				}
+
+				const containerWidth = slider.parentElement.clientWidth - arrowSpace;
+
+
 				// Определяем количество элементов в видимой области в зависимости от размера экрана
 				if (window.innerWidth < 480) {
 					itemsPerView = 2;
@@ -221,75 +244,90 @@
 				} else {
 					itemsPerView = 4;
 				}
-				
-				// Устанавливаем ширину элементов
-				itemWidth = containerWidth / itemsPerView;
-				
-				sliderItems.forEach(item => {
+
+				// Добавляем отступ между элементами
+				const itemGap = 5; // отступ между элементами
+
+				// Учитываем отступ при расчете ширины
+				itemWidth = (containerWidth - (itemGap * (itemsPerView - 1))) / itemsPerView;
+
+				// Применяем новую ширину и отступы к элементам
+				sliderItems.forEach((item, index) => {
 					item.style.width = `${itemWidth}px`;
+
+					// Добавляем отступ справа для всех элементов кроме последнего
+					if (index < sliderItems.length - 1) {
+						item.style.marginRight = `${itemGap}px`;
+					} else {
+						item.style.marginRight = '0';
+					}
 				});
-				
+
 				// Ограничиваем позицию слайдера
 				adjustPosition();
 			}
-			
+
 			function adjustPosition() {
 				// Ограничиваем крайние позиции для предотвращения пустого пространства
 				const maxPosition = Math.max(0, totalItems - itemsPerView);
 				currentPosition = Math.min(Math.max(0, currentPosition), maxPosition);
-				
+
 				// Перемещаем слайдер
 				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
 			}
-			
+
 			// Обработчики кнопок навигации
 			function prevSlide() {
 				if (isAnimating) return;
 				isAnimating = true;
-				
+
 				currentPosition = Math.max(0, currentPosition - 1);
 				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-				
+
 				// Защита от быстрых множественных кликов
 				setTimeout(() => {
 					isAnimating = false;
 				}, 400); // Время анимации в стилях
 			}
-			
+
 			function nextSlide() {
 				if (isAnimating) return;
 				isAnimating = true;
-				
+
 				const maxPosition = Math.max(0, totalItems - itemsPerView);
 				currentPosition = Math.min(currentPosition + 1, maxPosition);
 				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-				
+
 				setTimeout(() => {
 					isAnimating = false;
 				}, 400);
 			}
-			
+
 			// Привязываем обработчики событий
 			prevBtn.addEventListener('click', prevSlide);
 			nextBtn.addEventListener('click', nextSlide);
-			
+
 			// Инициализация слайдера и обработка изменений размера окна
 			updateSizes();
 			window.addEventListener('resize', updateSizes);
-			
+
 			// Поддержка свайпов для мобильных устройств
 			let touchStartX = 0;
 			let touchEndX = 0;
-			
+
 			slider.addEventListener('touchstart', function(e) {
 				touchStartX = e.changedTouches[0].screenX;
-			}, {passive: true});
-			
+			}, {
+				passive: true
+			});
+
 			slider.addEventListener('touchend', function(e) {
 				touchEndX = e.changedTouches[0].screenX;
 				handleSwipe();
-			}, {passive: true});
-			
+			}, {
+				passive: true
+			});
+
 			function handleSwipe() {
 				const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
 				if (touchEndX - touchStartX > swipeThreshold) {

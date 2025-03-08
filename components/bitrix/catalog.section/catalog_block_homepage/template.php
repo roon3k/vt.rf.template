@@ -541,11 +541,19 @@ require_once(__DIR__ . '/price_helper.php');
         height: 36px !important; /* Меньшая высота для мобильных */
         -webkit-line-clamp: 2;
     }
+	.stickers {
+		left: -20px!important;
+		top: 5px!important;
+	}
 }
 
 @media (max-width: 576px) {
     .catalog_item .item-title {
         font-size: 13px;
     }
+	.stickers {
+		left: -20px!important;
+		top: 5px!important;
+	}
 }
 </style>

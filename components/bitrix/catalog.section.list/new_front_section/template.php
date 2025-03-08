@@ -8,7 +8,7 @@ $rsParentSection = CIBlockSection::GetByID($arResult['SECTION']['ID']);
 if ($arParentSection = $rsParentSection->GetNext()) {
 	$arFilter = array('IBLOCK_ID' => $arParentSection['IBLOCK_ID'], '>LEFT_MARGIN' => $arParentSection['LEFT_MARGIN'], '<RIGHT_MARGIN' => $arParentSection['RIGHT_MARGIN'], '>DEPTH_LEVEL' => $arParentSection['DEPTH_LEVEL']); // выберет потомков без учета активности
 	$rsSect = CIBlockSection::GetList(array('left_margin' => 'asc'), $arFilter);
-	
+
 	while ($arSect = $rsSect->GetNext()) {
 		$arResult['SECTIONS'][] = $arSect;
 	}
@@ -22,10 +22,12 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 			.custom-slider-container {
 				position: relative;
 				width: 100%;
-				overflow: hidden; /* Важно для обрезки выходящего за границы контента */
-				padding: 0; /* Убираем отступы, чтобы контент не заходил за край */
+				overflow: hidden;
+				/* Важно для обрезки выходящего за границы контента */
+				padding: 0;
+				/* Убираем отступы, чтобы контент не заходил за край */
 			}
-			
+
 			.custom-slider {
 				display: flex;
 				transition: transform 0.4s ease;
@@ -34,21 +36,21 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				/* Добавляем внутренние отступы вместо отступов контейнера */
 				padding: 0 40px;
 			}
-			
+
 			.custom-slider-item {
 				flex: 0 0 auto;
 				transition: all 0.3s ease;
 				display: flex;
 				justify-content: center;
 			}
-			
+
 			/* Стили для компактной карусели */
 			#main-sections-carousel .item-section {
 				padding: 10px;
 				transition: all 0.3s ease;
 				text-align: center;
 			}
-			
+
 			#main-sections-carousel .item {
 				text-align: center;
 				padding: 15px;
@@ -61,20 +63,20 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				max-width: 200px;
 				margin: 0 auto;
 			}
-			
+
 			/* Эффект увеличения при наведении на весь элемент */
 			#main-sections-carousel .item:hover {
 				transform: scale(1.05);
 				z-index: 2;
 				position: relative;
-				box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 			}
-			
+
 			#main-sections-carousel .item.active {
-				box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-				border: 2px solid #4086F1;
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+				border: 2px solid #318582;
 			}
-			
+
 			#main-sections-carousel .img {
 				margin-bottom: 10px;
 				overflow: hidden;
@@ -82,13 +84,15 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				justify-content: center;
 				align-items: center;
 			}
-			
+
 			#main-sections-carousel .img img {
 				max-width: 100%;
 				height: auto;
 				margin: 0 auto;
+				width: 100px;
+				height: 100px;
 			}
-			
+
 			#main-sections-carousel .name {
 				font-size: 14px;
 				font-weight: 500;
@@ -98,7 +102,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				overflow: hidden;
 				text-align: center;
 			}
-			
+
 			/* Стили для стрелок навигации - должны быть поверх контента */
 			.custom-slider-nav {
 				position: absolute;
@@ -107,18 +111,19 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				width: 100%;
 				height: 100%;
 				pointer-events: none;
-				z-index: 100; /* Увеличиваем z-index чтобы стрелки были поверх элементов */
+				z-index: 100;
+				/* Увеличиваем z-index чтобы стрелки были поверх элементов */
 			}
-			
+
 			.custom-slider-prev,
 			.custom-slider-next {
 				position: absolute;
 				top: 50%;
 				transform: translateY(-50%);
-				background: rgba(255, 255, 255, 0.9); /* Делаем более непрозрачным */
+				background: rgba(255, 255, 255, 0.9);
 				color: #333;
-				width: 40px;
-				height: 40px;
+				width: 36px;
+				height: 36px;
 				border-radius: 50%;
 				display: flex;
 				align-items: center;
@@ -126,26 +131,19 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 				transition: all 0.3s ease;
 				pointer-events: auto;
-				z-index: 101; /* Стрелки должны быть поверх всего */
+				z-index: 101;
 				cursor: pointer;
 				border: none;
 			}
-			
-			.custom-slider-prev:hover,
-			.custom-slider-next:hover {
-				background: #fff;
-				box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-			}
-			
-			/* Позиционируем стрелки на границах контейнера */
+
 			.custom-slider-prev {
-				left: 0;
+				left: 2px;
 			}
-			
+
 			.custom-slider-next {
-				right: 0;
+				right: 2px;
 			}
-			
+
 			/* Создаем градиентные маски по краям для визуального обозначения обрезки */
 			.custom-slider-container::before,
 			.custom-slider-container::after {
@@ -154,20 +152,22 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				top: 0;
 				width: 40px;
 				height: 100%;
-				z-index: 99; /* Выше элементов, но ниже стрелок */
-				pointer-events: none; /* Чтобы клики проходили сквозь маску */
+				z-index: 99;
+				/* Выше элементов, но ниже стрелок */
+				pointer-events: none;
+				/* Чтобы клики проходили сквозь маску */
 			}
-			
+
 			.custom-slider-container::before {
 				left: 0;
-				background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0));
+				background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
 			}
-			
+
 			.custom-slider-container::after {
 				right: 0;
-				background: linear-gradient(to left, rgba(255,255,255,0.9), rgba(255,255,255,0));
+				background: linear-gradient(to left, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
 			}
-			
+
 			/* Стили для лоадера */
 			.section-loader {
 				position: absolute;
@@ -180,9 +180,10 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				align-items: center;
 				justify-content: center;
 				background: rgba(255, 255, 255, 0.9);
-				z-index: 200; /* Лоадер должен быть поверх всего */
+				z-index: 200;
+				/* Лоадер должен быть поверх всего */
 			}
-			
+
 			.section-loader .spinner {
 				width: 40px;
 				height: 40px;
@@ -192,22 +193,27 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				animation: spin 1s linear infinite;
 				margin-bottom: 10px;
 			}
-			
+
 			.section-loader .loading-text {
 				font-size: 14px;
 				color: #333;
 			}
-			
+
 			@keyframes spin {
-				0% { transform: rotate(0deg); }
-				100% { transform: rotate(360deg); }
+				0% {
+					transform: rotate(0deg);
+				}
+
+				100% {
+					transform: rotate(360deg);
+				}
 			}
-			
+
 			/* Удаляем ненужные элементы */
 			.left_gif {
 				display: none;
 			}
-			
+
 			/* Стили для лоадера товаров */
 			.products-loader {
 				position: absolute;
@@ -221,7 +227,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				justify-content: center;
 				z-index: 100;
 			}
-			
+
 			.products-loader .spinner {
 				width: 50px;
 				height: 50px;
@@ -230,29 +236,49 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				border-radius: 50%;
 				animation: spin 1s linear infinite;
 			}
-			
+
 			/* Адаптивные стили */
 			@media (max-width: 767px) {
-				.custom-slider {
-					padding: 0 30px; /* Уменьшаем отступы на мобильных */
+				.custom-slider-prev,
+				.custom-slider-next {
+					width: 30px;
+					height: 30px;
+				}
+				
+				.custom-slider-prev {
+					left: 0;
+				}
+				
+				.custom-slider-next {
+					right: 0;
 				}
 				
 				.custom-slider-container::before,
 				.custom-slider-container::after {
-					width: 30px; /* Уменьшаем ширину маски */
+					width: 30px;
 				}
 				
+				.custom-slider {
+					padding: 0 35px;
+				}
+
+				.custom-slider-container::before,
+				.custom-slider-container::after {
+					width: 30px;
+					/* Уменьшаем ширину маски */
+				}
+
 				#main-sections-carousel .name {
 					font-size: 13px;
 					height: 30px;
 				}
-				
+
 				#main-sections-carousel .item {
 					padding: 10px;
 				}
 			}
 		</style>
-		
+
 		<div class="list items">
 			<div class="custom-slider-container" id="section-carousel-wrapper">
 				<div id="section-carousel-loader" class="section-loader">
@@ -270,16 +296,16 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 							break;
 						}
 					}
-					
+
 					// Сохраняем активный элемент в отдельной переменной
 					$activeSectionData = null;
 					if ($activeKey !== null) {
 						$activeSectionData = $arResult['SECTIONS'][$activeKey];
 					}
-					
+
 					// Теперь выводим секции, применяя array_reverse и особую обработку для активного элемента
 					$reversedSections = array_reverse($arResult['SECTIONS']);
-					
+
 					// Если нашли активную секцию, выводим её отдельно первой
 					if ($activeSectionData): ?>
 						<div class="custom-slider-item item-section" data-sect="<?= $activeSectionData['ID'] ?>" data-level="<?= $activeSectionData['DEPTH_LEVEL'] ?? '1' ?>">
@@ -301,11 +327,11 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 							</div>
 						</div>
 					<?php endif;
-					
+
 					// Затем выводим все остальные секции
 					foreach ($reversedSections as $arSection):
 						// Пропускаем активную секцию, т.к. она уже выведена выше
-						if ($activeSectionData && $arSection['ID'] == $activeSectionData['ID']) continue; 
+						if ($activeSectionData && $arSection['ID'] == $activeSectionData['ID']) continue;
 					?>
 						<div class="custom-slider-item item-section" data-sect="<?= $arSection['ID'] ?>" data-level="<?= $arSection['DEPTH_LEVEL'] ?? '1' ?>">
 							<div class="item" id="<?= $this->GetEditAreaId($arSection['ID']); ?>">
@@ -329,21 +355,25 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				</div>
 				<div class="custom-slider-nav">
 					<button class="custom-slider-prev">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+							<path fill="none" stroke="currentColor" stroke-width="2" d="m15 6l-6 6l6 6" />
+						</svg>
 					</button>
 					<button class="custom-slider-next">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6"/></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+							<path fill="none" stroke="currentColor" stroke-width="2" d="m9 6l6 6l-6 6" />
+						</svg>
 					</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
 			// Получаем элементы лоадера
 			const loader = document.getElementById('section-carousel-loader');
-			
+
 			// Функция для предзагрузки всех изображений
 			function preloadAllImages() {
 				return new Promise(function(resolve) {
@@ -351,32 +381,32 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 					let loadedCount = 0;
 					const imgElements = document.querySelectorAll('#main-sections-carousel img');
 					const totalImages = imgElements.length;
-					
+
 					// Если нет изображений, сразу возвращаем результат
 					if (totalImages === 0) {
 						resolve();
 						return;
 					}
-					
+
 					imgElements.forEach(function(imgEl) {
 						const imgSrc = imgEl.getAttribute('src');
 						if (imgSrc) {
 							const img = new Image();
-							
+
 							img.onload = function() {
 								loadedCount++;
 								if (loadedCount === totalImages) {
 									resolve();
 								}
 							};
-							
+
 							img.onerror = function() {
 								loadedCount++;
 								if (loadedCount === totalImages) {
 									resolve();
 								}
 							};
-							
+
 							img.src = imgSrc;
 							images.push(img);
 						} else {
@@ -386,36 +416,36 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 							}
 						}
 					});
-					
+
 					// Страховка: если по какой-то причине не все изображения загрузились за 3 секунды
 					setTimeout(function() {
 						resolve();
 					}, 3000);
 				});
 			}
-			
+
 			// Функция для загрузки товаров по AJAX - ВОССТАНАВЛИВАЕМ ИЗНАЧАЛЬНУЮ ВЕРСИЮ
 			function loadProducts(sectionId, sectionLevel) {
 				// Находим контейнер с товарами
 				const productsContainer = document.querySelector('.catalog_block.items.block_list.grid-list');
-				
+
 				if (!productsContainer) {
 					console.error('Контейнер для товаров не найден на странице');
 					return;
 				}
-				
+
 				// Запоминаем родительский контейнер для корректного обновления
 				const parentContainer = productsContainer.parentNode;
-				
+
 				// Создаем и показываем индикатор загрузки
 				const loader = document.createElement('div');
 				loader.className = 'products-loader';
 				loader.innerHTML = '<div class="spinner"></div>';
-				
+
 				// Позиционируем loader относительно контейнера товаров
 				parentContainer.style.position = 'relative';
 				parentContainer.appendChild(loader);
-				
+
 				// Формируем данные для запроса
 				const formData = new FormData();
 				formData.append('ajax', 'Y');
@@ -423,354 +453,377 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 				if (sectionLevel) {
 					formData.append('SECTION_LEVEL', sectionLevel);
 				}
-				
+
 				// Сохраняем текущую позицию скролла
 				const scrollPosition = window.scrollY;
-				
+
 				// Выполняем AJAX-запрос
 				fetch('/ajax/load_products.php', {
-					method: 'POST',
-					body: formData,
-					credentials: 'same-origin'
-				})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Ошибка сети: ' + response.statusText);
-					}
-					return response.text();
-				})
-				.then(html => {
-					try {
-						// Пытаемся распарсить как JSON
-						const response = JSON.parse(html);
-						
-						// Если успешно распарсили как JSON, обрабатываем JSON-ответ
-						if (response.success) {
-							if (response.productsHtml) {
-								const tempDiv = document.createElement('div');
-								tempDiv.innerHTML = response.productsHtml;
-								
-								const newProductsList = tempDiv.querySelector('.catalog_block.items.block_list.grid-list');
-								if (newProductsList) {
-									productsContainer.innerHTML = newProductsList.innerHTML;
-									productsContainer.className = newProductsList.className;
-								} else {
-									productsContainer.innerHTML = response.productsHtml;
-								}
-							} else if (response.html) {
-								productsContainer.innerHTML = response.html;
-							}
-							
-							// Обновляем URL без перезагрузки страницы
-							if (response.sectionUrl) {
-								window.history.pushState({sectionId}, document.title, response.sectionUrl);
-							}
-						} else if (response.error) {
-							productsContainer.innerHTML = '<div class="alert alert-danger">' + response.error + '</div>';
-						} else {
-							throw new Error('Некорректный формат JSON');
+						method: 'POST',
+						body: formData,
+						credentials: 'same-origin'
+					})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Ошибка сети: ' + response.statusText);
 						}
-						
-						// Обновляем фильтр, если он есть в ответе
-						if (response.filterHtml) {
-							try {
-								// Находим контейнер фильтра
-								const filterContainer = document.querySelector('.bx_filter.bx_filter_vertical.swipeignore');
-								
-								if (filterContainer) {
-									// Создаем временный div для парсинга HTML
+						return response.text();
+					})
+					.then(html => {
+						try {
+							// Пытаемся распарсить как JSON
+							const response = JSON.parse(html);
+
+							// Если успешно распарсили как JSON, обрабатываем JSON-ответ
+							if (response.success) {
+								if (response.productsHtml) {
 									const tempDiv = document.createElement('div');
-									tempDiv.innerHTML = response.filterHtml;
-									
-									// Находим фильтр в полученном HTML
-									const newFilter = tempDiv.querySelector('.bx_filter.bx_filter_vertical.swipeignore') || 
-													tempDiv.querySelector('.bx_filter_vertical') || 
-													tempDiv.querySelector('.bx_filter');
-									
-									if (newFilter) {
-										// Обновляем содержимое фильтра
-										const filterInner = filterContainer.querySelector('.bx_filter_section');
-										const newFilterInner = newFilter.querySelector('.bx_filter_section');
-										
-										if (filterInner && newFilterInner) {
-											// Обновляем HTML фильтра
-											filterInner.innerHTML = newFilterInner.innerHTML;
-											
-											// Инициализируем фильтр
-											if (typeof JCSmartFilter !== 'undefined') {
-												try {
-													// Если есть существующий объект фильтра
-													if (window.smartFilter && typeof window.smartFilter.bindPostEvents === 'function') {
-														window.smartFilter.bindPostEvents();
-													} else {
-														// Иначе создаем новый
-														const filterForm = document.querySelector('#smartfilter');
-														if (filterForm) {
-															window.smartFilter = new JCSmartFilter(filterForm.getAttribute('action'));
-														}
-													}
-													
-													// Инициализация элементов интерфейса
-													if (typeof initSelectItem === 'function') {
-														initSelectItem();
-													}
-													
-													// Инициализация ползунков
-													if (typeof initSlider === 'function') {
-														const sliders = filterContainer.querySelectorAll('.bx_ui_slider_track');
-														sliders.forEach(slider => {
-															if (slider.id) {
-																initSlider(slider.id);
+									tempDiv.innerHTML = response.productsHtml;
+
+									const newProductsList = tempDiv.querySelector('.catalog_block.items.block_list.grid-list');
+									if (newProductsList) {
+										productsContainer.innerHTML = newProductsList.innerHTML;
+										productsContainer.className = newProductsList.className;
+									} else {
+										productsContainer.innerHTML = response.productsHtml;
+									}
+								} else if (response.html) {
+									productsContainer.innerHTML = response.html;
+								}
+
+								// Обновляем URL без перезагрузки страницы
+								if (response.sectionUrl) {
+									window.history.pushState({
+										sectionId
+									}, document.title, response.sectionUrl);
+								}
+							} else if (response.error) {
+								productsContainer.innerHTML = '<div class="alert alert-danger">' + response.error + '</div>';
+							} else {
+								throw new Error('Некорректный формат JSON');
+							}
+
+							// Обновляем фильтр, если он есть в ответе
+							if (response.filterHtml) {
+								try {
+									// Находим контейнер фильтра
+									const filterContainer = document.querySelector('.bx_filter.bx_filter_vertical.swipeignore');
+
+									if (filterContainer) {
+										// Создаем временный div для парсинга HTML
+										const tempDiv = document.createElement('div');
+										tempDiv.innerHTML = response.filterHtml;
+
+										// Находим фильтр в полученном HTML
+										const newFilter = tempDiv.querySelector('.bx_filter.bx_filter_vertical.swipeignore') ||
+											tempDiv.querySelector('.bx_filter_vertical') ||
+											tempDiv.querySelector('.bx_filter');
+
+										if (newFilter) {
+											// Обновляем содержимое фильтра
+											const filterInner = filterContainer.querySelector('.bx_filter_section');
+											const newFilterInner = newFilter.querySelector('.bx_filter_section');
+
+											if (filterInner && newFilterInner) {
+												// Обновляем HTML фильтра
+												filterInner.innerHTML = newFilterInner.innerHTML;
+
+												// Инициализируем фильтр
+												if (typeof JCSmartFilter !== 'undefined') {
+													try {
+														// Если есть существующий объект фильтра
+														if (window.smartFilter && typeof window.smartFilter.bindPostEvents === 'function') {
+															window.smartFilter.bindPostEvents();
+														} else {
+															// Иначе создаем новый
+															const filterForm = document.querySelector('#smartfilter');
+															if (filterForm) {
+																window.smartFilter = new JCSmartFilter(filterForm.getAttribute('action'));
 															}
-														});
+														}
+
+														// Инициализация элементов интерфейса
+														if (typeof initSelectItem === 'function') {
+															initSelectItem();
+														}
+
+														// Инициализация ползунков
+														if (typeof initSlider === 'function') {
+															const sliders = filterContainer.querySelectorAll('.bx_ui_slider_track');
+															sliders.forEach(slider => {
+																if (slider.id) {
+																	initSlider(slider.id);
+																}
+															});
+														}
+
+														console.log('Фильтр успешно обновлен');
+													} catch (e) {
+														console.error('Ошибка при инициализации фильтра:', e);
 													}
-													
-													console.log('Фильтр успешно обновлен');
-												} catch (e) {
-													console.error('Ошибка при инициализации фильтра:', e);
 												}
+											} else {
+												console.error('Внутренние элементы фильтра не найдены');
 											}
 										} else {
-											console.error('Внутренние элементы фильтра не найдены');
+											console.error('Новый фильтр не найден в ответе');
 										}
 									} else {
-										console.error('Новый фильтр не найден в ответе');
+										console.error('Контейнер фильтра не найден на странице');
 									}
-								} else {
-									console.error('Контейнер фильтра не найден на странице');
+								} catch (e) {
+									console.error('Ошибка при обновлении фильтра:', e);
 								}
-							} catch (e) {
-								console.error('Ошибка при обновлении фильтра:', e);
+							}
+						} catch (e) {
+							// Если не JSON, считаем ответ HTML-кодом
+							console.log('Получен HTML-ответ вместо JSON:', e);
+
+							// Парсим полученный HTML
+							const tempDiv = document.createElement('div');
+							tempDiv.innerHTML = html;
+
+							// Находим в нем контейнер с товарами
+							const newProductsList = tempDiv.querySelector('.catalog_block.items.block_list.grid-list');
+							if (newProductsList) {
+								productsContainer.innerHTML = newProductsList.innerHTML;
+								productsContainer.className = newProductsList.className;
+							} else {
+								// Если не нашли контейнер, выводим весь HTML
+								productsContainer.innerHTML = html;
 							}
 						}
-					} catch (e) {
-						// Если не JSON, считаем ответ HTML-кодом
-						console.log('Получен HTML-ответ вместо JSON:', e);
-						
-						// Парсим полученный HTML
-						const tempDiv = document.createElement('div');
-						tempDiv.innerHTML = html;
-						
-						// Находим в нем контейнер с товарами
-						const newProductsList = tempDiv.querySelector('.catalog_block.items.block_list.grid-list');
-						if (newProductsList) {
-							productsContainer.innerHTML = newProductsList.innerHTML;
-							productsContainer.className = newProductsList.className;
-						} else {
-							// Если не нашли контейнер, выводим весь HTML
-							productsContainer.innerHTML = html;
+
+						// Восстанавливаем позицию скролла
+						window.scrollTo(0, scrollPosition);
+
+						// Запускаем инициализацию скриптов
+						if (typeof BX !== 'undefined' && BX.ajax && BX.ajax.processScripts) {
+							BX.ajax.processScripts(BX.processHTML(html).SCRIPT);
 						}
-					}
-					
-					// Восстанавливаем позицию скролла
-					window.scrollTo(0, scrollPosition);
-					
-					// Запускаем инициализацию скриптов
-					if (typeof BX !== 'undefined' && BX.ajax && BX.ajax.processScripts) {
-						BX.ajax.processScripts(BX.processHTML(html).SCRIPT);
-					}
-					
-					// Запускаем событие для уведомления других скриптов
-					document.dispatchEvent(new CustomEvent('products-loaded', {
-						detail: { 
-							sectionId: sectionId,
-							sectionLevel: sectionLevel 
+
+						// Запускаем событие для уведомления других скриптов
+						document.dispatchEvent(new CustomEvent('products-loaded', {
+							detail: {
+								sectionId: sectionId,
+								sectionLevel: sectionLevel
+							}
+						}));
+					})
+					.catch(error => {
+						console.error('Ошибка загрузки товаров:', error);
+						productsContainer.innerHTML = '<div class="alert alert-danger">Не удалось загрузить товары. Пожалуйста, попробуйте еще раз.</div>';
+					})
+					.finally(() => {
+						// Удаляем индикатор загрузки
+						if (loader && loader.parentNode) {
+							loader.parentNode.removeChild(loader);
 						}
-					}));
-				})
-				.catch(error => {
-					console.error('Ошибка загрузки товаров:', error);
-					productsContainer.innerHTML = '<div class="alert alert-danger">Не удалось загрузить товары. Пожалуйста, попробуйте еще раз.</div>';
-				})
-				.finally(() => {
-					// Удаляем индикатор загрузки
-					if (loader && loader.parentNode) {
-						loader.parentNode.removeChild(loader);
-					}
-				});
+					});
 			}
-			
+
 			// Предзагрузка изображений перед инициализацией слайдера
 			preloadAllImages().then(function() {
 				// Скрываем лоадер
 				if (loader) {
 					loader.style.display = 'none';
 				}
-				
+
 				// Инициализация слайдера
 				const slider = document.querySelector('.custom-slider');
 				const sliderItems = document.querySelectorAll('.custom-slider-item');
 				const prevBtn = document.querySelector('.custom-slider-prev');
 				const nextBtn = document.querySelector('.custom-slider-next');
-				
-			let currentPosition = 0;
-			let itemsPerView = 4;
-			let itemWidth = 0;
+
+				let currentPosition = 0;
+				let itemsPerView = 4;
+				let itemWidth = 0;
 				let totalItems = sliderItems.length;
-			let isAnimating = false;
-			
+				let isAnimating = false;
+
 				// Функция обновления размеров слайдера
-			function updateSizes() {
-				const containerWidth = slider.parentElement.clientWidth - 80; // Учитываем размер места для стрелок
-				
-				// Определяем количество элементов в видимой области в зависимости от размера экрана
-				if (window.innerWidth < 480) {
-					itemsPerView = 2;
-				} else if (window.innerWidth < 768) {
-					itemsPerView = 2;
-				} else if (window.innerWidth < 992) {
-					itemsPerView = 3;
-				} else {
-					itemsPerView = 4;
-				}
-				
-				// Устанавливаем ширину элементов
-				itemWidth = containerWidth / itemsPerView;
-				
-				sliderItems.forEach(item => {
-					item.style.width = `${itemWidth}px`;
-				});
-				
-				// Проверяем текущую позицию и корректируем при необходимости
-				adjustPosition();
-				
-				// Обновляем видимость кнопок навигации
-				updateNavButtons();
-				
-				// Проверка активного элемента - он всегда должен быть виден
-				const activeItem = document.querySelector('.item-section .item.active');
-				if (activeItem) {
-					const activeSection = activeItem.closest('.item-section');
-					if (activeSection) {
-						// Обновляем текущую позицию, если активный элемент не виден
-						const activeIndex = Array.from(sliderItems).indexOf(activeSection);
+				function updateSizes() {
+					// Увеличиваем отступ на маленьких экранах для стрелок
+					let arrowSpace = 80; // Стандартный отступ для стрелок (по 40px с каждой стороны)
+					
+					// На маленьких экранах увеличиваем отступ
+					if (window.innerWidth < 480) {
+						arrowSpace = 90; // Больше места для стрелок на маленьких экранах
+					} else if (window.innerWidth < 768) {
+						arrowSpace = 85; // Для средних экранов
+					}
+					
+					const containerWidth = slider.parentElement.clientWidth - arrowSpace;
+					
+					// Определяем количество элементов в видимой области
+					if (window.innerWidth < 480) {
+						itemsPerView = 2;
+					} else if (window.innerWidth < 768) {
+						itemsPerView = 2;
+					} else if (window.innerWidth < 992) {
+						itemsPerView = 3;
+					} else {
+						itemsPerView = 4;
+					}
+					
+					// Добавляем отступ между элементами
+					const itemGap = 5; // отступ между элементами
+					
+					// Учитываем отступ при расчете ширины
+					itemWidth = (containerWidth - (itemGap * (itemsPerView - 1))) / itemsPerView;
+					
+					// Применяем новую ширину и отступы к элементам
+					sliderItems.forEach((item, index) => {
+						item.style.width = `${itemWidth}px`;
 						
-						// Если активный элемент находится за пределами видимой области
-						if (activeIndex >= 0 && (activeIndex < currentPosition || activeIndex >= currentPosition + itemsPerView)) {
-							// Устанавливаем позицию так, чтобы активный элемент был виден
-							currentPosition = Math.min(Math.max(0, activeIndex), Math.max(0, totalItems - itemsPerView));
-							
-							// Применяем трансформацию
-							slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-							
-							// Обновляем кнопки навигации после изменения позиции
-							updateNavButtons();
+						// Добавляем отступ справа для всех элементов кроме последнего
+						if (index < sliderItems.length - 1) {
+							item.style.marginRight = `${itemGap}px`;
+						} else {
+							item.style.marginRight = '0';
+						}
+					});
+					
+					// Проверяем текущую позицию и корректируем при необходимости
+					adjustPosition();
+
+					// Обновляем видимость кнопок навигации
+					updateNavButtons();
+
+					// Проверка активного элемента - он всегда должен быть виден
+					const activeItem = document.querySelector('.item-section .item.active');
+					if (activeItem) {
+						const activeSection = activeItem.closest('.item-section');
+						if (activeSection) {
+							// Обновляем текущую позицию, если активный элемент не виден
+							const activeIndex = Array.from(sliderItems).indexOf(activeSection);
+
+							// Если активный элемент находится за пределами видимой области
+							if (activeIndex >= 0 && (activeIndex < currentPosition || activeIndex >= currentPosition + itemsPerView)) {
+								// Устанавливаем позицию так, чтобы активный элемент был виден
+								currentPosition = Math.min(Math.max(0, activeIndex), Math.max(0, totalItems - itemsPerView));
+
+								// Применяем трансформацию
+								slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+
+								// Обновляем кнопки навигации после изменения позиции
+								updateNavButtons();
+							}
 						}
 					}
 				}
-			}
-			
-			function adjustPosition() {
-				// Получаем максимально возможную позицию слайдера
-				const maxPosition = Math.max(0, totalItems - itemsPerView);
-				
-				// Ограничиваем текущую позицию
-				currentPosition = Math.min(Math.max(0, currentPosition), maxPosition);
-				
-				// Если элементов меньше или равно количеству отображаемых, то центрируем их
-				if (totalItems <= itemsPerView) {
-					// Центрируем элементы
-					slider.style.justifyContent = 'center';
-					slider.style.transform = 'translateX(0)';
-				} else {
-					// Иначе сдвигаем слайдер
-					slider.style.justifyContent = 'flex-start';
-					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+
+				function adjustPosition() {
+					// Получаем максимально возможную позицию слайдера
+					const maxPosition = Math.max(0, totalItems - itemsPerView);
+
+					// Ограничиваем текущую позицию
+					currentPosition = Math.min(Math.max(0, currentPosition), maxPosition);
+
+					// Если элементов меньше или равно количеству отображаемых, то центрируем их
+					if (totalItems <= itemsPerView) {
+						// Центрируем элементы
+						slider.style.justifyContent = 'center';
+						slider.style.transform = 'translateX(0)';
+					} else {
+						// Иначе сдвигаем слайдер
+						slider.style.justifyContent = 'flex-start';
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					}
 				}
-			}
-			
+
 				// Функция обновления состояния кнопок навигации
-			function updateNavButtons() {
-				// Показываем/скрываем кнопки в зависимости от текущей позиции
-				if (totalItems <= itemsPerView) {
-					// Если все элементы помещаются, скрываем обе кнопки
-					prevBtn.style.display = 'none';
-					nextBtn.style.display = 'none';
-				} else {
-					// Если элементов больше чем может быть отображено
-					const maxPosition = totalItems - itemsPerView;
-					
-					// Левая кнопка активна только если мы не в начале
-					prevBtn.style.opacity = currentPosition <= 0 ? '0.5' : '1';
-					prevBtn.style.pointerEvents = currentPosition <= 0 ? 'none' : 'auto';
-					
-					// Правая кнопка активна только если мы не в конце
-					nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
-					nextBtn.style.pointerEvents = currentPosition >= maxPosition ? 'none' : 'auto';
-					
-					// Показываем обе кнопки
-					prevBtn.style.display = 'flex';
-					nextBtn.style.display = 'flex';
+				function updateNavButtons() {
+					// Показываем/скрываем кнопки в зависимости от текущей позиции
+					if (totalItems <= itemsPerView) {
+						// Если все элементы помещаются, скрываем обе кнопки
+						prevBtn.style.display = 'none';
+						nextBtn.style.display = 'none';
+					} else {
+						// Если элементов больше чем может быть отображено
+						const maxPosition = totalItems - itemsPerView;
+
+						// Левая кнопка активна только если мы не в начале
+						prevBtn.style.opacity = currentPosition <= 0 ? '0.5' : '1';
+						prevBtn.style.pointerEvents = currentPosition <= 0 ? 'none' : 'auto';
+
+						// Правая кнопка активна только если мы не в конце
+						nextBtn.style.opacity = currentPosition >= maxPosition ? '0.5' : '1';
+						nextBtn.style.pointerEvents = currentPosition >= maxPosition ? 'none' : 'auto';
+
+						// Показываем обе кнопки
+						prevBtn.style.display = 'flex';
+						nextBtn.style.display = 'flex';
+					}
 				}
-			}
-			
-			// Обработчики кнопок навигации
-			function prevSlide() {
-				if (isAnimating) return;
-				isAnimating = true;
-				
-				// Проверяем, не в начале ли мы
-				if (currentPosition > 0) {
-					currentPosition = Math.max(0, currentPosition - 1);
-					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-					
-					// Обновляем состояние кнопок
-					updateNavButtons();
+
+				// Обработчики кнопок навигации
+				function prevSlide() {
+					if (isAnimating) return;
+					isAnimating = true;
+
+					// Проверяем, не в начале ли мы
+					if (currentPosition > 0) {
+						currentPosition = Math.max(0, currentPosition - 1);
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+
+						// Обновляем состояние кнопок
+						updateNavButtons();
+					}
+
+					// Защита от быстрых множественных кликов
+					setTimeout(() => {
+						isAnimating = false;
+					}, 400); // Время анимации в стилях
 				}
-				
-				// Защита от быстрых множественных кликов
-				setTimeout(() => {
-					isAnimating = false;
-				}, 400); // Время анимации в стилях
-			}
-			
-			function nextSlide() {
-				if (isAnimating) return;
-				isAnimating = true;
-				
-				// Проверяем, не в конце ли мы
-				const maxPosition = Math.max(0, totalItems - itemsPerView);
-				if (currentPosition < maxPosition) {
-					currentPosition = Math.min(currentPosition + 1, maxPosition);
-					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-					
-					// Обновляем состояние кнопок
-					updateNavButtons();
+
+				function nextSlide() {
+					if (isAnimating) return;
+					isAnimating = true;
+
+					// Проверяем, не в конце ли мы
+					const maxPosition = Math.max(0, totalItems - itemsPerView);
+					if (currentPosition < maxPosition) {
+						currentPosition = Math.min(currentPosition + 1, maxPosition);
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+
+						// Обновляем состояние кнопок
+						updateNavButtons();
+					}
+
+					setTimeout(() => {
+						isAnimating = false;
+					}, 400);
 				}
-				
-				setTimeout(() => {
-					isAnimating = false;
-				}, 400);
-			}
-			
+
 				// Привязываем обработчики событий
 				prevBtn.addEventListener('click', prevSlide);
 				nextBtn.addEventListener('click', nextSlide);
-				
+
 				// Обработчик для активации раздела при клике
 				sliderItems.forEach((item, index) => {
 					const sliderItem = item.querySelector('.item');
-					
+
 					item.addEventListener('click', function(e) {
 						// Важно: предотвращаем стандартное действие для ссылок
 						e.preventDefault();
-						
+
 						// Убираем активный класс со всех элементов
 						sliderItems.forEach(el => {
 							el.querySelector('.item').classList.remove('active');
 						});
-						
+
 						// Добавляем активный класс текущему элементу
 						sliderItem.classList.add('active');
-						
+
 						// Загружаем товары для выбранного раздела через AJAX
 						const sectionId = item.getAttribute('data-sect');
 						const sectionLevel = parseInt(item.getAttribute('data-level') || "1");
-						
+
 						if (sectionId) {
 							loadProducts(sectionId, sectionLevel);
 						}
-						
+
 						// Если элемент находится вне видимой области, делаем его видимым
 						if (index < currentPosition) {
 							// Если элемент находится левее видимой области
@@ -779,18 +832,18 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 							// Если элемент находится правее видимой области
 							currentPosition = index - itemsPerView + 1;
 						}
-						
+
 						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
-						
+
 						// Обновляем состояние кнопок
 						updateNavButtons();
 					});
 				});
-				
+
 				// Инициализация слайдера и обработка изменений размера окна
 				updateSizes();
 				window.addEventListener('resize', updateSizes);
-				
+
 				// Обработка навигации по истории браузера (кнопки Назад/Вперед)
 				window.addEventListener('popstate', function(event) {
 					if (event.state && event.state.sectionId) {
@@ -802,26 +855,30 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						}
 					}
 				});
-				
+
 				// Поддержка свайпов для мобильных устройств
 				let touchStartX = 0;
 				let touchEndX = 0;
-				
+
 				slider.addEventListener('touchstart', function(e) {
 					touchStartX = e.changedTouches[0].screenX;
-				}, {passive: true});
-				
+				}, {
+					passive: true
+				});
+
 				slider.addEventListener('touchend', function(e) {
 					touchEndX = e.changedTouches[0].screenX;
 					handleSwipe();
-				}, {passive: true});
-				
+				}, {
+					passive: true
+				});
+
 				function handleSwipe() {
 					const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
-					
+
 					// Не обрабатываем свайпы, если все элементы помещаются на экране
 					if (totalItems <= itemsPerView) return;
-					
+
 					if (touchEndX - touchStartX > swipeThreshold) {
 						// Свайп вправо - только если не в начале
 						if (currentPosition > 0) {
@@ -835,7 +892,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						}
 					}
 				}
-				
+
 				// Показываем слайдер после инициализации
 				slider.style.opacity = '1';
 			});
