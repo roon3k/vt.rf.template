@@ -322,7 +322,7 @@ require_once(__DIR__ . '/price_helper.php');
 
 .stickers {
     position: absolute;
-    top: 10px;
+    top: -25px!important;
     left: 10px;
     z-index: 2;
     display: flex;
@@ -331,7 +331,7 @@ require_once(__DIR__ . '/price_helper.php');
 }
 
 .section_label {
-    padding: 6px 12px;
+    padding: 6px 5px!important;
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
