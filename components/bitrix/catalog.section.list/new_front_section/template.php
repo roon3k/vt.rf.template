@@ -470,6 +470,79 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 						} else {
 							throw new Error('Некорректный формат JSON');
 						}
+						
+						// Обновляем фильтр, если он есть в ответе
+						if (response.filterHtml) {
+							try {
+								// Находим контейнер фильтра
+								const filterContainer = document.querySelector('.bx_filter.bx_filter_vertical.swipeignore');
+								
+								if (filterContainer) {
+									// Создаем временный div для парсинга HTML
+									const tempDiv = document.createElement('div');
+									tempDiv.innerHTML = response.filterHtml;
+									
+									// Находим фильтр в полученном HTML
+									const newFilter = tempDiv.querySelector('.bx_filter.bx_filter_vertical.swipeignore') || 
+													tempDiv.querySelector('.bx_filter_vertical') || 
+													tempDiv.querySelector('.bx_filter');
+									
+									if (newFilter) {
+										// Обновляем содержимое фильтра
+										const filterInner = filterContainer.querySelector('.bx_filter_section');
+										const newFilterInner = newFilter.querySelector('.bx_filter_section');
+										
+										if (filterInner && newFilterInner) {
+											// Обновляем HTML фильтра
+											filterInner.innerHTML = newFilterInner.innerHTML;
+											
+											// Инициализируем фильтр
+											if (typeof JCSmartFilter !== 'undefined') {
+												try {
+													// Если есть существующий объект фильтра
+													if (window.smartFilter && typeof window.smartFilter.bindPostEvents === 'function') {
+														window.smartFilter.bindPostEvents();
+													} else {
+														// Иначе создаем новый
+														const filterForm = document.querySelector('#smartfilter');
+														if (filterForm) {
+															window.smartFilter = new JCSmartFilter(filterForm.getAttribute('action'));
+														}
+													}
+													
+													// Инициализация элементов интерфейса
+													if (typeof initSelectItem === 'function') {
+														initSelectItem();
+													}
+													
+													// Инициализация ползунков
+													if (typeof initSlider === 'function') {
+														const sliders = filterContainer.querySelectorAll('.bx_ui_slider_track');
+														sliders.forEach(slider => {
+															if (slider.id) {
+																initSlider(slider.id);
+															}
+														});
+													}
+													
+													console.log('Фильтр успешно обновлен');
+												} catch (e) {
+													console.error('Ошибка при инициализации фильтра:', e);
+												}
+											}
+										} else {
+											console.error('Внутренние элементы фильтра не найдены');
+										}
+									} else {
+										console.error('Новый фильтр не найден в ответе');
+									}
+								} else {
+									console.error('Контейнер фильтра не найден на странице');
+								}
+							} catch (e) {
+								console.error('Ошибка при обновлении фильтра:', e);
+							}
+						}
 					} catch (e) {
 						// Если не JSON, считаем ответ HTML-кодом
 						console.log('Получен HTML-ответ вместо JSON:', e);
