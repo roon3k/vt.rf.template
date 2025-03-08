@@ -1,5 +1,102 @@
 var ItemObj = {};
 
+// Остановка скроллинга после клика на мобильные табы - более радикальное решение
+(function() {
+    // Функция для предотвращения скролла на 500мс после клика
+    var preventScrollTimer = null;
+    var preventScroll = function(e) {
+        // Если активна блокировка скролла, предотвращаем его
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    };
+    
+    // Блокировка любых скроллов на 500мс
+    var blockScrollTemporarily = function() {
+        // Удаляем предыдущий таймер если есть
+        if (preventScrollTimer) {
+            clearTimeout(preventScrollTimer);
+            window.removeEventListener('scroll', preventScroll, { passive: false });
+        }
+        
+        // Устанавливаем обработчик, блокирующий скролл
+        window.addEventListener('scroll', preventScroll, { passive: false });
+        
+        // Устанавливаем таймер для снятия блокировки
+        preventScrollTimer = setTimeout(function() {
+            window.removeEventListener('scroll', preventScroll, { passive: false });
+            preventScrollTimer = null;
+        }, 500);
+    };
+    
+    // Обработчик клика на мобильные табы с перехватом события
+    var handleTabClick = function(e) {
+        console.log('Tab click intercepted');
+        
+        // Блокируем стандартное поведение
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Активируем временную блокировку скролла
+        blockScrollTemporarily();
+        
+        var _this = $(this);
+        
+        // Логика открытия/закрытия таба
+        if (_this.hasClass('active')) {
+            _this.removeClass('active');
+            _this.next().slideUp(200);
+        } else {
+            $('.title-tab-heading.visible-xs').removeClass('active');
+            $('.title-tab-heading.visible-xs').next().slideUp(200);
+            
+            _this.addClass('active');
+            _this.next().slideDown(200);
+        }
+        
+        return false;
+    };
+    
+    // Ждем загрузки DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        // Отключаем стандартное поведение табов
+        var tabElements = document.querySelectorAll('.title-tab-heading.visible-xs, .mobile-tab-title');
+        tabElements.forEach(function(tab) {
+            // Если есть href="#", заменяем на javascript:void(0)
+            if (tab.getAttribute('href') === '#') {
+                tab.setAttribute('href', 'javascript:void(0);');
+            }
+            
+            // Удаляем стандартные обработчики
+            tab.onclick = null;
+            
+            // Если это ссылка, убираем атрибут href
+            if (tab.tagName === 'A') {
+                tab.removeAttribute('href');
+            }
+            
+            // Добавляем свой обработчик напрямую
+            tab.addEventListener('click', handleTabClick, { capture: true });
+        });
+        
+        // Также перехватываем событие для любых будущих элементов
+        document.addEventListener('click', function(e) {
+            var target = e.target.closest('.title-tab-heading.visible-xs, .mobile-tab-title');
+            if (target) {
+                handleTabClick.call(target, e);
+            }
+        }, { capture: true });
+    });
+})();
+
+// Обычный обработчик событий (оставляем для поддержки старой логики)
+$(document).on('click', '.title-tab-heading.visible-xs', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Остальной код без изменений...
+});
+
 $(document).on("click", ".item-stock .store_view", function () {
   scroll_block($(".tabs_section"));
 });
@@ -195,6 +292,17 @@ $(document).ready(function () {
     } finally {
       ignoreResize.pop();
     }
+  });
+
+  // Добавьте этот код в $(document).ready():
+  $(document).ready(function() {
+    // Заменяем href="#" на javascript:void(0);
+    $('.title-tab-heading.visible-xs, .mobile-tab-title').each(function() {
+        var $this = $(this);
+        if ($this.attr('href') === '#') {
+            $this.attr('href', 'javascript:void(0);');
+        }
+    });
   });
 });
 $(".set_block").ready(function () {
@@ -3928,3 +4036,66 @@ $(".set_block").ready(function () {
     }
   };
 })(window);
+
+// Добавьте этот код в начало файла после var ItemObj = {};
+$(function() {
+    // Отключаем все стандартные обработчики кликов на табы в мобильной версии
+    $('.title-tab-heading.visible-xs, .mobile-tab-title, .tab-mobile').each(function() {
+        var $this = $(this);
+        
+        // Удаляем атрибут href, если он есть
+        if ($this.attr('href') === '#') {
+            $this.attr('href', 'javascript:void(0);');
+        }
+        
+        // Отключаем стандартные обработчики
+        $this.off('click.tab').off('click.tabs');
+    });
+    
+    // Наш новый обработчик
+    $(document).off('click.mobileTab').on('click.mobileTab', '.title-tab-heading, .title-tab-heading.visible-xs, .mobile-tab-title, [data-role="mobile-tab"]', function(e) {
+        console.log('Mobile tab clicked'); // Для отладки
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation(); // Останавливает все остальные обработчики
+        
+        var $this = $(this);
+        
+        // Остальная логика...
+        if ($this.hasClass('active')) {
+            $this.removeClass('active');
+            $this.next().slideUp(200);
+        } else {
+            $('.title-tab-heading, .mobile-tab-title').removeClass('active');
+            $('.title-tab-heading, .mobile-tab-title').next().slideUp(200);
+            
+            $this.addClass('active');
+            $this.next().slideDown(200);
+        }
+        
+        return false;
+    });
+});
+
+// Добавьте в начало файла после var ItemObj = {};
+$(function() {
+    // Отладочный код для выяснения, какие элементы вызывают скролл
+    $('body').on('click', '*', function(e) {
+        var $this = $(this);
+        if ($this.closest('.title-tab-heading, .mobile-tab-title').length > 0) {
+            console.log('Clicked element:', this);
+            console.log('Classes:', $this.attr('class'));
+            console.log('Parent:', $this.parent());
+            
+            // Если элемент это ссылка с href="#", предотвращаем действие
+            if ($this.is('a[href="#"]')) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
+});
+
+setTimeout(() => {
+  monitorEvents(window, 'scroll');
+}, 1000);

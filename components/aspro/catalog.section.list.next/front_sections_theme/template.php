@@ -311,32 +311,131 @@
 			updateSizes();
 			window.addEventListener('resize', updateSizes);
 
-			// Поддержка свайпов для мобильных устройств
+			// Переменные для отслеживания свайпов
 			let touchStartX = 0;
-			let touchEndX = 0;
-
+			let touchCurrentX = 0;
+			let touchStartTime = 0;
+			let isDragging = false;
+			let startTransform = 0;
+			let lastDelta = 0;
+			let velocity = 0;
+			let lastMoveTime = 0;
+			
+			// Начало касания
 			slider.addEventListener('touchstart', function(e) {
-				touchStartX = e.changedTouches[0].screenX;
-			}, {
-				passive: true
-			});
-
-			slider.addEventListener('touchend', function(e) {
-				touchEndX = e.changedTouches[0].screenX;
-				handleSwipe();
-			}, {
-				passive: true
-			});
-
-			function handleSwipe() {
-				const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
-				if (touchEndX - touchStartX > swipeThreshold) {
-					// Свайп вправо
-					prevSlide();
-				} else if (touchStartX - touchEndX > swipeThreshold) {
-					// Свайп влево
-					nextSlide();
+				if (isAnimating) return;
+				
+				touchStartX = e.touches[0].clientX;
+				touchCurrentX = touchStartX;
+				touchStartTime = Date.now();
+				lastMoveTime = touchStartTime;
+				isDragging = true;
+				velocity = 0;
+				
+				// Запоминаем начальную позицию слайдера
+				startTransform = getCurrentTransform();
+				
+				// Останавливаем анимацию во время свайпа
+				slider.style.transition = 'none';
+				
+				e.preventDefault();
+			}, {passive: false});
+			
+			// Перемещение пальца
+			slider.addEventListener('touchmove', function(e) {
+				if (!isDragging) return;
+				
+				const currentX = e.touches[0].clientX;
+				const delta = currentX - touchStartX;
+				const now = Date.now();
+				const dt = now - lastMoveTime;
+				
+				// Расчет мгновенной скорости свайпа
+				if (dt > 0) {
+					velocity = (currentX - touchCurrentX) / dt;
 				}
+				
+				touchCurrentX = currentX;
+				lastMoveTime = now;
+				lastDelta = delta;
+				
+				// Применяем перемещение с учетом границ
+				const maxOffset = Math.max(0, totalItems - itemsPerView) * itemWidth;
+				let newOffset = startTransform + delta;
+				
+				// Добавляем сопротивление при выходе за границы
+				if (newOffset > 0) {
+					newOffset = newOffset / 3;
+				} else if (newOffset < -maxOffset) {
+					const overscroll = -(newOffset + maxOffset);
+					newOffset = -maxOffset - overscroll / 3;
+				}
+				
+				slider.style.transform = `translateX(${newOffset}px)`;
+			}, {passive: true});
+			
+			// Отпускание пальца
+			slider.addEventListener('touchend', function(e) {
+				if (!isDragging) return;
+				isDragging = false;
+				
+				// Восстанавливаем анимацию
+				slider.style.transition = 'transform 0.3s ease-out';
+				
+				const touchDuration = Date.now() - touchStartTime;
+				const delta = lastDelta;
+				
+				// Определяем направление свайпа
+				if (Math.abs(delta) > 20 || Math.abs(velocity) > 0.5) {
+					// Смотрим, сколько элементов нужно прокрутить на основе скорости и расстояния
+					let slideChange = 0;
+					
+					if (Math.abs(delta) > 50) {
+						// Базовое определение по расстоянию
+						slideChange = Math.sign(delta);
+					}
+					
+					// Добавляем влияние скорости для быстрых свайпов
+					if (Math.abs(velocity) > 0.5 && touchDuration < 300) {
+						slideChange = Math.sign(velocity) * Math.min(3, Math.floor(Math.abs(velocity) / 0.5));
+					}
+					
+					// Применяем изменение с учетом границ
+					if (slideChange !== 0) {
+						const maxPosition = Math.max(0, totalItems - itemsPerView);
+						const newPosition = Math.max(0, Math.min(maxPosition, currentPosition - slideChange));
+						
+						// Обновляем позицию
+						currentPosition = newPosition;
+						slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					} else {
+						// Возвращаем к ближайшему слайду
+						snapToSlide();
+					}
+				} else {
+					// Возвращаемся к ближайшему слайду если свайп был слишком слабым
+					snapToSlide();
+				}
+				
+				// Обновляем кнопки после свайпа
+				updateNavButtons();
+			}, {passive: true});
+			
+			// Функция для получения текущего смещения слайдера
+			function getCurrentTransform() {
+				const style = window.getComputedStyle(slider);
+				const matrix = new WebKitCSSMatrix(style.transform);
+				return matrix.e; // Горизонтальное смещение
+			}
+			
+			// Функция для выравнивания по ближайшему слайду
+			function snapToSlide() {
+				const currentOffset = getCurrentTransform();
+				const closestSlide = Math.round(-currentOffset / itemWidth);
+				const maxPosition = Math.max(0, totalItems - itemsPerView);
+				
+				currentPosition = Math.max(0, Math.min(maxPosition, closestSlide));
+				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
 			}
 		});
 	</script>

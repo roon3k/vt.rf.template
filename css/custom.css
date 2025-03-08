@@ -1465,4 +1465,16 @@ ul.menu .see_more a,
     footer .bottom-under .inner-wrapper .copy-block .copy, footer .print-link {
         padding-bottom: 37px!important;
     }
+    .row.flexbox {
+        padding: 0 10px;
+    }
+    .mobile-menu ul li:last-child {
+        opacity: 0!important;
+    }
+    #item-carousel_65 .owl-next, #item-carousel_66 .owl-next, #item-carousel_67 .owl-next {
+        right: 0!important;
+    }
+    #item-carousel_65 .owl-prev, #item-carousel_66 .owl-prev, #item-carousel_67 .owl-prev {
+        left: 0!important;
+    }
 }
