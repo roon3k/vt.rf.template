@@ -31,6 +31,13 @@
 				width: 100%;
 				/* Добавляем внутренние отступы вместо отступов контейнера */
 				padding: 0 40px;
+				touch-action: pan-y pinch-zoom; /* Улучшаем поведение касаний */
+				-webkit-touch-callout: none; /* Запрещаем выделение текста при долгом касании */
+				-webkit-user-select: none; /* Запрещаем выделение текста в Safari */
+				-moz-user-select: none; /* Запрещаем выделение текста в Firefox */
+				-ms-user-select: none; /* Запрещаем выделение текста в IE/Edge */
+				user-select: none; /* Запрещаем выделение текста */
+				will-change: transform; /* Указываем браузеру, что transform будет меняться */
 			}
 
 			.custom-slider-item {
@@ -38,6 +45,7 @@
 				transition: all 0.3s ease;
 				display: flex;
 				justify-content: center;
+				touch-action: pan-y; /* Разрешаем вертикальную прокрутку, блокируем горизонтальную */
 			}
 
 			/* Стили для компактной карусели */
@@ -97,6 +105,18 @@
 				height: 34px;
 				overflow: hidden;
 				text-align: center;
+			}
+
+			#main-sections-carousel .name a {
+				display: block;
+				padding: 5px;
+				touch-action: manipulation; /* Оптимизация для касаний */
+				-webkit-tap-highlight-color: rgba(0, 0, 0, 0.1); /* Подсветка при касании */
+			}
+			
+			#main-sections-carousel .img a {
+				display: block;
+				touch-action: manipulation; /* Оптимизация для касаний */
 			}
 
 			/* Стили для стрелок навигации - должны быть поверх контента */
@@ -239,6 +259,32 @@
 
 				#main-sections-carousel .item {
 					padding: 10px;
+				}
+				
+				/* Улучшения для мобильных устройств */
+				.custom-slider-container {
+					overflow-x: hidden; /* Скрываем горизонтальный скролл */
+					-webkit-overflow-scrolling: touch; /* Плавный скролл в Safari */
+				}
+				
+				.custom-slider {
+					overscroll-behavior-x: none; /* Предотвращаем перетягивание страницы */
+				}
+				
+				.custom-slider-prev,
+				.custom-slider-next {
+					width: 36px;
+					height: 36px;
+				}
+				
+				/* Увеличиваем область касания ссылок на мобильных устройствах */
+				#main-sections-carousel .name a {
+					padding: 8px 5px;
+					min-height: 44px; /* Минимальная рекомендованная высота для целей касания */
+				}
+				
+				#main-sections-carousel .img a {
+					min-height: 44px; /* Минимальная рекомендованная высота для целей касания */
 				}
 			}
 		</style>
@@ -518,38 +564,168 @@
 				// Поддержка свайпов для мобильных устройств
 				let touchStartX = 0;
 				let touchEndX = 0;
+				let touchStartY = 0;
+				let isDragging = false;
+				let startTime = 0;
+				let currentTouchX = 0;
+				let initialTranslate = 0;
 
+				// Определение, является ли устройство мобильным
+				const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+				// Улучшенная обработка касаний для плавного скролла
 				slider.addEventListener('touchstart', function(e) {
-					touchStartX = e.changedTouches[0].screenX;
-				}, {
-					passive: true
-				});
+					if (!isMobileDevice) return;
+					
+					// Сохраняем информацию о начальной точке касания
+					touchStartX = e.touches[0].clientX;
+					touchStartY = e.touches[0].clientY;
+					currentTouchX = touchStartX;
+					startTime = Date.now();
+					
+					// Проверяем, не является ли целью события ссылка
+					const targetElement = e.target;
+					const isLink = targetElement.closest('a');
+					
+					// Даже если это ссылка, мы все равно начинаем отслеживать движение
+					// чтобы определить, был ли это клик или свайп
+					isDragging = true;
+					
+					// Сохраняем текущее положение слайдера
+					initialTranslate = currentPosition * itemWidth;
+					
+					// Удаляем плавную анимацию при начале перетаскивания для мгновенного отклика
+					slider.style.transition = 'none';
+				}, { passive: true });
+
+				slider.addEventListener('touchmove', function(e) {
+					if (!isDragging || !isMobileDevice) return;
+					
+					const touchX = e.touches[0].clientX;
+					const touchY = e.touches[0].clientY;
+					
+					// Определяем тип движения (горизонтальное или вертикальное)
+					const deltaX = Math.abs(touchX - touchStartX);
+					const deltaY = Math.abs(touchY - touchStartY);
+					
+					// Если движение больше вертикальное, чем горизонтальное
+					// позволяем странице скроллиться и выходим
+					if (deltaY > deltaX && deltaY > 10) {
+						return;
+					}
+					
+					// Для горизонтального движения предотвращаем стандартное поведение
+					if (deltaX > 5) {
+						e.preventDefault();
+					}
+					
+					// Обновляем текущую позицию
+					currentTouchX = touchX;
+					
+					// Рассчитываем смещение и применяем его к слайдеру
+					const diffX = touchStartX - currentTouchX;
+					let newTranslate = initialTranslate + diffX;
+					
+					// Ограничения для скролла
+					const maxTranslate = Math.max(0, totalItems - itemsPerView) * itemWidth;
+					
+					// Добавляем "сопротивление" при достижении границ
+					if (newTranslate < 0) {
+						newTranslate = newTranslate * 0.3; // Уменьшаем скорость для ощущения сопротивления
+					} else if (newTranslate > maxTranslate) {
+						const overscroll = newTranslate - maxTranslate;
+						newTranslate = maxTranslate + overscroll * 0.3;
+					}
+					
+					// Применяем перемещение
+					slider.style.transform = `translateX(-${newTranslate}px)`;
+				}, { passive: false });
 
 				slider.addEventListener('touchend', function(e) {
-					touchEndX = e.changedTouches[0].screenX;
-					handleSwipe();
-				}, {
-					passive: true
-				});
-
-				function handleSwipe() {
-					const swipeThreshold = 50; // минимальное расстояние для регистрации свайпа
-
-					// Не обрабатываем свайпы, если все элементы помещаются на экране
-					if (totalItems <= itemsPerView) return;
-
-					if (touchEndX - touchStartX > swipeThreshold) {
-						// Свайп вправо - только если не в начале
-						if (currentPosition > 0) {
-							prevSlide();
-						}
-					} else if (touchStartX - touchEndX > swipeThreshold) {
-						// Свайп влево - только если не в конце
-						const maxPosition = Math.max(0, totalItems - itemsPerView);
-						if (currentPosition < maxPosition) {
-							nextSlide();
+					if (!isDragging || !isMobileDevice) return;
+					
+					// Получаем конечные координаты и время
+					const touchX = e.changedTouches[0].clientX;
+					const touchEndTime = Date.now();
+					
+					// Вычисляем параметры движения
+					const timeElapsed = touchEndTime - startTime;
+					const distance = touchStartX - touchX;
+					const speed = Math.abs(distance) / timeElapsed;
+					
+					// Если это был короткий тап без движения - это клик
+					if (Math.abs(distance) < 10 && timeElapsed < 300) {
+						// Проверяем, был ли клик по ссылке
+						const target = e.target;
+						const link = target.closest('a');
+						
+						// Если это ссылка, позволяем стандартное поведение (переход)
+						if (link) {
+							// Просто сбрасываем флаги и выходим
+							isDragging = false;
+							return;
 						}
 					}
+					
+					// Восстанавливаем плавную анимацию
+					slider.style.transition = 'transform 0.4s ease';
+					
+					// Определяем, куда должен прокрутиться слайдер после свайпа
+					let newPosition = Math.round((initialTranslate + distance) / itemWidth);
+					
+					// Учитываем скорость для эффекта инерции
+					if (speed > 0.3 && Math.abs(distance) > 30) {
+						// При быстром свайпе добавляем дополнительное движение
+						const direction = distance > 0 ? 1 : -1;
+						const inertia = Math.min(Math.floor(speed * 3), 2); // Не более 2 элементов
+						newPosition += direction * inertia;
+					}
+					
+					// Ограничиваем позицию
+					const maxPosition = Math.max(0, totalItems - itemsPerView);
+					newPosition = Math.max(0, Math.min(newPosition, maxPosition));
+					
+					// Применяем новую позицию
+					currentPosition = newPosition;
+					slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+					
+					// Обновляем состояние кнопок
+					updateNavButtons();
+					
+					// Сбрасываем флаг перетаскивания
+					isDragging = false;
+				}, { passive: true });
+
+				// Обработчик для разделения кликов и свайпов
+				sliderItems.forEach((item) => {
+					const links = item.querySelectorAll('a');
+					links.forEach(link => {
+						link.addEventListener('click', function(e) {
+							// Если было значительное движение, это свайп - отменяем переход по ссылке
+							if (isDragging && Math.abs(touchStartX - currentTouchX) > 10) {
+								e.preventDefault();
+							}
+						});
+					});
+				});
+
+				// Предотвращение прокрутки страницы при горизонтальном свайпе
+				if (isMobileDevice) {
+					const container = document.querySelector('.custom-slider-container');
+					container.addEventListener('touchmove', function(e) {
+						if (isDragging) {
+							const touchX = e.touches[0].clientX;
+							const touchY = e.touches[0].clientY;
+							const deltaX = Math.abs(touchX - touchStartX);
+							const deltaY = Math.abs(touchY - touchStartY);
+							
+							// Если движение больше горизонтальное, чем вертикальное,
+							// предотвращаем прокрутку страницы
+							if (deltaX > deltaY && deltaX > 10) {
+								e.preventDefault();
+							}
+						}
+					}, { passive: false });
 				}
 			});
 		});
