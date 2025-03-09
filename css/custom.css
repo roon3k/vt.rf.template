@@ -1477,4 +1477,7 @@ ul.menu .see_more a,
     #item-carousel_65 .owl-prev, #item-carousel_66 .owl-prev, #item-carousel_67 .owl-prev {
         left: 0!important;
     }
+    .rounded_block .social-icons li a, .soc-avt .row a {
+        margin: 5px!important;
+    }
 }
