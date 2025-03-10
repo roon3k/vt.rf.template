@@ -428,7 +428,7 @@
 					}
 
 					// Устанавливаем ширину элементов
-					itemWidth = containerWidth / itemsPerView;
+					itemWidth = (containerWidth / itemsPerView)+20;
 
 					sliderItems.forEach(item => {
 						item.style.width = `${itemWidth}px`;

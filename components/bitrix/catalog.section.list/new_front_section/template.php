@@ -686,7 +686,7 @@ if ($arParentSection = $rsParentSection->GetNext()) {
 					const itemGap = 5; // отступ между элементами
 					
 					// Учитываем отступ при расчете ширины
-					itemWidth = (containerWidth - (itemGap * (itemsPerView - 1))) / itemsPerView;
+					itemWidth = ((containerWidth - (itemGap * (itemsPerView - 1))) / itemsPerView) + 20;
 					
 					// Применяем новую ширину и отступы к элементам
 					sliderItems.forEach((item, index) => {

@@ -1480,4 +1480,29 @@ ul.menu .see_more a,
     .rounded_block .social-icons li a, .soc-avt .row a {
         margin: 5px!important;
     }
+    .item_info--top_block {
+        margin-top: 10px;
+    }
+
+    .catalog_detail .drag_block_detail.tabs_section .tab-content .tab-pane:first-child .title-tab-heading {
+       border-top-left-radius: 15px;
+       border-top-right-radius: 15px;
+    }
+    .catalog_detail .drag_block_detail.tabs_section .tab-content .tab-pane:last-child .title-tab-heading {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+     }
+     .list-type-block.item-views .item {
+        border-radius: 15px;
+     }
+     footer .ext_view .subscribe-form, .bottom-menu, .social-block .social-icons, .footer-light .info {
+        text-align: left!important;
+     }
+     footer .info .blocks {
+        margin-left: 0!important;
+     }
 }
+
+.url-block {
+    border-radius: 15px;
+ }
