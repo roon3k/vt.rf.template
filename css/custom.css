@@ -1446,15 +1446,14 @@ ul.menu .see_more a,
 
 @media (max-width: 768px) {
     .advantage_icon {
-        margin: 0 15px 15px 15px !important;
+        /* margin: 0 15px 15px 15px !important; */
         }
 
     .advantage_item {
-        text-align: left!important;
         padding: 0 30px!important;
     }
     .bottom-menu .items {
-        text-align: left!important;
+        /* text-align: left!important; */
     }
     .catalog_section_list .section_item li.name a span {
         font-weight: 500!important;
@@ -1496,13 +1495,20 @@ ul.menu .see_more a,
         border-radius: 15px;
      }
      footer .ext_view .subscribe-form, .bottom-menu, .social-block .social-icons, .footer-light .info {
-        text-align: left!important;
+        /* text-align: left!important; */
      }
      footer .info .blocks {
-        margin-left: 0!important;
+        /* margin-left: 0!important; */
      }
+     
 }
 
 .url-block {
     border-radius: 15px;
+ }
+ .ce_cmp .catalog_block .image_wrapper_block, .ce_cmp .catalog_block .image_wrapper_block a, .ce_cmp .tabs_slider.items .image_wrapper_block, .ce_cmp .tabs_slider.items .image_wrapper_block a {
+    height: 140px!important;
+ }
+ .catalog_block .catalog_item {
+    padding: 0!important;
  }
