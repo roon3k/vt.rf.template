@@ -331,7 +331,7 @@ require_once(__DIR__ . '/price_helper.php');
 }
 
 .section_label {
-    padding: 6px 5px!important;
+    padding: 0!important;
     border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
@@ -512,7 +512,7 @@ require_once(__DIR__ . '/price_helper.php');
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Ограничиваем двумя строками */
     -webkit-box-orient: vertical;
-    margin-bottom: 10px !important; /* Одинаковый отступ после названия */
+    /* margin-bottom: 10px !important; Одинаковый отступ после названия */
 	margin-top: 10px !important;
 }
 

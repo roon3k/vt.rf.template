@@ -1512,3 +1512,9 @@ ul.menu .see_more a,
  .catalog_block .catalog_item {
     padding: 0!important;
  }
+ .catalog_item .item-title {
+    margin-bottom: 0!important;
+ }
+ .section_label {
+    padding: 0!important;
+ }
