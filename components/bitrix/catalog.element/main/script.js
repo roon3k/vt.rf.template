@@ -43,15 +43,24 @@ var ItemObj = {};
         
         var _this = $(this);
         
+        // Проверяем видимость панели контента для более надежного определения открытого таба
+        var contentPanel = _this.next();
+        var isPanelVisible = contentPanel.is(':visible');
+        
+        console.log('Is tab active:', _this.hasClass('active'), 'Is panel visible:', isPanelVisible);
+        
         // Логика открытия/закрытия таба
-        if (_this.hasClass('active')) {
+        if (_this.hasClass('active') || isPanelVisible) {
             _this.removeClass('active');
+            _this.parent().removeClass('active'); // Убираем active у родителя
             _this.next().slideUp(200);
         } else {
             $('.title-tab-heading.visible-xs').removeClass('active');
+            $('.title-tab-heading.visible-xs').parent().removeClass('active'); // Убираем active у родителей всех табов
             $('.title-tab-heading.visible-xs').next().slideUp(200);
             
             _this.addClass('active');
+            _this.parent().addClass('active'); // Добавляем active родителю
             _this.next().slideDown(200);
         }
         
