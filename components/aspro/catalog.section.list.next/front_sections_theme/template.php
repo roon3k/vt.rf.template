@@ -329,7 +329,7 @@
 				touchCurrentX = touchStartX;
 				touchStartTime = Date.now();
 				lastMoveTime = touchStartTime;
-				isDragging = true;
+				isDragging = false; // Устанавливаем в false, чтобы отличить клик от свайпа
 				velocity = 0;
 				
 				// Запоминаем начальную позицию слайдера
@@ -338,11 +338,20 @@
 				// Останавливаем анимацию во время свайпа
 				slider.style.transition = 'none';
 				
-				e.preventDefault();
-			}, {passive: false});
+				// Убираем preventDefault, чтобы не блокировать переходы по ссылкам
+			}, {passive: true});
 			
 			// Перемещение пальца
 			slider.addEventListener('touchmove', function(e) {
+				// Определяем момент, когда касание превращается в свайп
+				const moveX = e.touches[0].clientX;
+				const moveDelta = Math.abs(moveX - touchStartX);
+				
+				// Если перемещение достаточно большое, считаем что это свайп
+				if (moveDelta > 10) {
+					isDragging = true;
+				}
+				
 				if (!isDragging) return;
 				
 				const currentX = e.touches[0].clientX;
@@ -376,7 +385,12 @@
 			
 			// Отпускание пальца
 			slider.addEventListener('touchend', function(e) {
-				if (!isDragging) return;
+				if (!isDragging) {
+					// Если не было свайпа (простой клик), ничего не делаем, 
+					// позволяя стандартному обработчику кликов работать
+					return;
+				}
+				
 				isDragging = false;
 				
 				// Восстанавливаем анимацию
@@ -436,6 +450,39 @@
 				
 				currentPosition = Math.max(0, Math.min(maxPosition, closestSlide));
 				slider.style.transform = `translateX(-${currentPosition * itemWidth}px)`;
+			}
+			
+			// Функция для обновления состояния кнопок навигации
+			function updateNavButtons() {
+				const maxPosition = Math.max(0, totalItems - itemsPerView);
+				
+				// Показываем/скрываем кнопки в зависимости от позиции
+				prevBtn.style.opacity = currentPosition > 0 ? '1' : '0.5';
+				nextBtn.style.opacity = currentPosition < maxPosition ? '1' : '0.5';
+				
+				prevBtn.style.pointerEvents = currentPosition > 0 ? 'auto' : 'none';
+				nextBtn.style.pointerEvents = currentPosition < maxPosition ? 'auto' : 'none';
+			}
+			
+			// Инициализируем кнопки навигации при загрузке
+			updateNavButtons();
+			
+			// Улучшенная обработка кликов для мобильных устройств
+			const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+			
+			if (isMobile) {
+				// Находим все ссылки внутри слайдера
+				const links = slider.querySelectorAll('a');
+				
+				// Для каждой ссылки добавляем обработчик
+				links.forEach(link => {
+					link.addEventListener('click', function(e) {
+						// Если был свайп, а не простой тап, предотвращаем переход по ссылке
+						if (isDragging || Math.abs(lastDelta) > 10) {
+							e.preventDefault();
+						}
+					});
+				});
 			}
 		});
 	</script>
