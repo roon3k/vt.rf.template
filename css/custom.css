@@ -1504,6 +1504,10 @@ ul.menu .see_more a,
      .catalog_detail .active .title-tab-heading, .catalog_detail .title-tab-heading:focus, .catalog_detail .title-tab-heading:active, .catalog_detail .title-tab-heading:hover {
         color: #222;
      }
+
+     .main-sections-owl .owl-prev {
+        left: 5px!important;
+     }
      
 }
 
