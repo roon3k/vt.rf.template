@@ -1534,3 +1534,7 @@ ul.menu .see_more a,
     margin-bottom: 15px!important;
  }
  
+
+ .bx_searche { border-radius: 30px!important; }
+
+ .scrollbar { scrollbar-width: auto!important; }

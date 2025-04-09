@@ -354,17 +354,24 @@ function JCTitleSearch2(arParams)
 			pos_input = BX.pos(_this.INPUT);
 		}
 		
-
 		pos.width = pos.right - pos.left;
 		_this.RESULT.style.top = (pos.bottom + 2) + 'px';
-		_this.RESULT.style.left = pos_input.left + 'px';
-
-		if($(_this.INPUT).closest('.inline-search-block.with-close').length)
-			_this.RESULT.style.width = pos_input.width + 'px';
-		else if (isBoundHeader)
-			_this.RESULT.style.width = 'calc(100% - 1px)';
-		else
-			_this.RESULT.style.width = pos.width + 'px';
+		
+		// Calculate border-radius offset (30px)
+		const borderRadiusOffset = 30;
+		
+		if($(_this.INPUT).closest('.inline-search-block.with-close').length) {
+			_this.RESULT.style.width = (pos_input.width - (borderRadiusOffset * 2)) + 'px';
+			_this.RESULT.style.left = (pos_input.left + borderRadiusOffset) + 'px';
+		}
+		else if (isBoundHeader) {
+			_this.RESULT.style.width = 'calc(100% - ' + (borderRadiusOffset * 2) + 'px)';
+			_this.RESULT.style.left = borderRadiusOffset + 'px';
+		}
+		else {
+			_this.RESULT.style.width = (pos.width - (borderRadiusOffset * 2)) + 'px';
+			_this.RESULT.style.left = (pos.left + borderRadiusOffset) + 'px';
+		}
 		return pos;
 	};
 
