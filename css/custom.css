@@ -794,7 +794,7 @@ body .tabs_slider .catalog_item:hover .inner_wrap {
 }
 
 .contacts__name {
-    color: hsla(0, 0%, 100%, .4);
+    color: hsl(0deg 0% 100% / 75%);
     margin: 0 16px 0 0;
 }
 
@@ -1538,3 +1538,4 @@ ul.menu .see_more a,
  .bx_searche { border-radius: 30px!important; }
 
  .scrollbar { scrollbar-width: auto!important; }
+ .logo_and_menu-row .phone { font-weight: 500!important; }
